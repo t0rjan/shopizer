@@ -21,102 +21,74 @@ import com.salesmanager.core.model.shoppingcart.ShoppingCart;
 import com.salesmanager.core.model.shoppingcart.ShoppingCartItem;
 
 
-
 public interface OrderService extends SalesManagerEntityService<Long, Order> {
 
-    void addOrderStatusHistory(Order order, OrderStatusHistory history)
-                    throws ServiceException;
+  void addOrderStatusHistory(Order order, OrderStatusHistory history)
+      throws ServiceException;
 
-    /**
-     * Can be used to calculates the final prices of all items contained in checkout page
-     * @param orderSummary
-     * @param customer
-     * @param store
-     * @param language
-     * @return
-     * @throws ServiceException
-     */
-    OrderTotalSummary caculateOrderTotal(OrderSummary orderSummary,
-                                         Customer customer, MerchantStore store, Language language)
-                                                         throws ServiceException;
+  /**
+   * Can be used to calculates the final prices of all items contained in checkout page
+   */
+  OrderTotalSummary caculateOrderTotal(OrderSummary orderSummary,
+      Customer customer, MerchantStore store, Language language)
+      throws ServiceException;
 
-    /**
-     * Can be used to calculates the final prices of all items contained in a ShoppingCart
-     * @param orderSummary
-     * @param store
-     * @param language
-     * @return
-     * @throws ServiceException
-     */
-    OrderTotalSummary caculateOrderTotal(OrderSummary orderSummary,
-                                         MerchantStore store, Language language) throws ServiceException;
+  /**
+   * Can be used to calculates the final prices of all items contained in a ShoppingCart
+   */
+  OrderTotalSummary caculateOrderTotal(OrderSummary orderSummary,
+      MerchantStore store, Language language) throws ServiceException;
 
 
-    /**
-     * Can be used to calculates the final prices of all items contained in checkout page
-     * @param shoppingCart
-     * @param customer
-     * @param store
-     * @param language
-     * @return  @return {@link OrderTotalSummary}
-     * @throws ServiceException
-     */
-    OrderTotalSummary calculateShoppingCartTotal(final ShoppingCart shoppingCart,final Customer customer, final MerchantStore store, final Language language) throws ServiceException;
+  /**
+   * Can be used to calculates the final prices of all items contained in checkout page
+   *
+   * @return @return {@link OrderTotalSummary}
+   */
+  OrderTotalSummary calculateShoppingCartTotal(final ShoppingCart shoppingCart,
+      final Customer customer, final MerchantStore store, final Language language)
+      throws ServiceException;
 
-    /**
-     * Can be used to calculates the final prices of all items contained in a ShoppingCart
-     * @param shoppingCart
-     * @param store
-     * @param language
-     * @return {@link OrderTotalSummary}
-     * @throws ServiceException
-     */
-    OrderTotalSummary calculateShoppingCartTotal(final ShoppingCart shoppingCart,final MerchantStore store, final Language language) throws ServiceException;
+  /**
+   * Can be used to calculates the final prices of all items contained in a ShoppingCart
+   *
+   * @return {@link OrderTotalSummary}
+   */
+  OrderTotalSummary calculateShoppingCartTotal(final ShoppingCart shoppingCart,
+      final MerchantStore store, final Language language) throws ServiceException;
 
-    ByteArrayOutputStream generateInvoice(MerchantStore store, Order order,
-                                          Language language) throws ServiceException;
+  ByteArrayOutputStream generateInvoice(MerchantStore store, Order order,
+      Language language) throws ServiceException;
 
-    Order getOrder(Long id);
-
-    
-    /**
-     * For finding orders. Mainly used in the administration tool
-     * @param store
-     * @param criteria
-     * @return
-     */
-    OrderList listByStore(MerchantStore store, OrderCriteria criteria);
-
-    void saveOrUpdate(Order order) throws ServiceException;
-
-	Order processOrder(Order order, Customer customer,
-			List<ShoppingCartItem> items, OrderTotalSummary summary,
-			Payment payment, MerchantStore store) throws ServiceException;
-
-	Order processOrder(Order order, Customer customer,
-			List<ShoppingCartItem> items, OrderTotalSummary summary,
-			Payment payment, Transaction transaction, MerchantStore store)
-			throws ServiceException;
+  Order getOrder(Long id);
 
 
+  /**
+   * For finding orders. Mainly used in the administration tool
+   */
+  OrderList listByStore(MerchantStore store, OrderCriteria criteria);
 
-	
-	/**
-	 * Determines if an Order has download files
-	 * @param order
-	 * @return
-	 * @throws ServiceException
-	 */
-	boolean hasDownloadFiles(Order order) throws ServiceException;
-	
-	/**
-	 * List all orders that have been pre-authorized but not captured
-	 * @param store
-	 * @param startDate
-	 * @param endDate
-	 * @return
-	 * @throws ServiceException
-	 */
-	List<Order> getCapturableOrders(MerchantStore store, Date startDate, Date endDate) throws ServiceException;
+  void saveOrUpdate(Order order) throws ServiceException;
+
+  Order processOrder(Order order, Customer customer,
+      List<ShoppingCartItem> items, OrderTotalSummary summary,
+      Payment payment, MerchantStore store) throws ServiceException;
+
+  Order processOrder(Order order, Customer customer,
+      List<ShoppingCartItem> items, OrderTotalSummary summary,
+      Payment payment, Transaction transaction, MerchantStore store)
+      throws ServiceException;
+
+
+  /**
+   * Determines if an Order has download files
+   */
+  boolean hasDownloadFiles(Order order) throws ServiceException;
+
+  /**
+   * List all orders that have been pre-authorized but not captured
+   */
+  List<Order> getCapturableOrders(MerchantStore store, Date startDate, Date endDate)
+      throws ServiceException;
 
 }

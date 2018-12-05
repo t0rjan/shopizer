@@ -8,9 +8,8 @@ import com.salesmanager.core.model.content.OutputContentFile;
 
 /**
  * Methods to retrieve the static content from the CMS
- * 
- * @author Carl Samson
  *
+ * @author Carl Samson
  */
 public interface FileGet {
 

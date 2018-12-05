@@ -29,121 +29,132 @@ import com.salesmanager.shop.model.customer.optin.PersistableCustomerOptin;
  *
  *
  */
-public interface CustomerFacade
-{
+public interface CustomerFacade {
 
-    /**
-     * Method used to fetch customer based on the username and storecode.
-     * Customer username is unique to each store.
-     *
-     * @param userName
-     * @param store
-     * @param store
-     * @param language
-     * @throws Exception
-     *
-     */
-    public CustomerEntity getCustomerDataByUserName(final String userName,final MerchantStore store, final Language language) throws Exception;
+  /**
+   * Method used to fetch customer based on the username and storecode.
+   * Customer username is unique to each store.
+   *
+   * @param userName
+   * @param store
+   * @param store
+   * @param language
+   * @throws Exception
+   *
+   */
+  public CustomerEntity getCustomerDataByUserName(final String userName, final MerchantStore store,
+      final Language language) throws Exception;
 
-    /**
-     * Creates a ReadableCustomer
-     * @param id
-     * @param merchantStore
-     * @param language
-     * @return
-     */
-    public ReadableCustomer getCustomerById(final Long id, final MerchantStore merchantStore, final Language language) throws Exception;
-    
-    /**
-     * <p>Method responsible for merging cart during authentication, 
-     *     Method will perform following operations
-     * <li> Merge Customer Shopping Cart with Session Cart if any.</li>
-     * <li> Convert Customer to {@link CustomerEntity} </li>
-     * </p>
-     *
-     * @param customer username of Customer
-     * @param sessionShoppingCartId session shopping cart, if user already have few items in Cart.
-     * @throws Exception
-     */
-    public ShoppingCart mergeCart(final Customer customer,final String sessionShoppingCartId,final MerchantStore store,final Language language) throws Exception;
-    
-    public Customer getCustomerByUserName(final String userName, final MerchantStore store) throws Exception;
-    
-    public boolean checkIfUserExists(final String userName,final MerchantStore store) throws Exception;
-    
-    public PersistableCustomer  registerCustomer( final PersistableCustomer customer,final MerchantStore merchantStore, final Language language) throws Exception;
-    
-    public Address getAddress(final Long userId, final MerchantStore merchantStore,boolean isBillingAddress) throws Exception;
-    
-    public void updateAddress( Long userId, MerchantStore merchantStore, Address address, final Language language )
-                    throws Exception;
+  /**
+   * Creates a ReadableCustomer
+   * @param id
+   * @param merchantStore
+   * @param language
+   * @return
+   */
+  public ReadableCustomer getCustomerById(final Long id, final MerchantStore merchantStore,
+      final Language language) throws Exception;
 
-    public void setCustomerModelDefaultProperties(Customer customer, MerchantStore store) throws Exception; 
-	//public Customer populateCustomerModel(PersistableCustomer customer,
-	//		MerchantStore merchantStore) throws Exception;
-	
-	public void authenticate(Customer customer, String userName, String password) throws Exception;
+  /**
+   * <p>Method responsible for merging cart during authentication,
+   *     Method will perform following operations
+   * <li> Merge Customer Shopping Cart with Session Cart if any.</li>
+   * <li> Convert Customer to {@link CustomerEntity} </li>
+   * </p>
+   *
+   * @param customer username of Customer
+   * @param sessionShoppingCartId session shopping cart, if user already have few items in Cart.
+   * @throws Exception
+   */
+  public ShoppingCart mergeCart(final Customer customer, final String sessionShoppingCartId,
+      final MerchantStore store, final Language language) throws Exception;
 
-	Customer getCustomerModel(PersistableCustomer customer,
-			MerchantStore merchantStore, Language language) throws Exception;
-	
-	Customer populateCustomerModel(Customer customerModel, PersistableCustomer customer,
-			MerchantStore merchantStore, Language language) throws Exception;
-	
-	/*
-	 * Creates a Customer from a PersistableCustomer received from REST API
-	 */
-	void create(PersistableCustomer customer, MerchantStore store) throws Exception;
-	
-	/**
-	 * Reset customer password
-	 * @param customer
-	 * @param store
-	 * @param language
-	 * @throws Exception
-	 */
-	void resetPassword(Customer customer, MerchantStore store, Language language) throws Exception;
-	
-	/**
-	 * Updates a Customer
-	 * @param customer
-	 * @param store
-	 * @throws Exception
-	 */
-	void update(PersistableCustomer customer, MerchantStore store) throws Exception;
-	
-	/**
-	 * Save or update a CustomerReview
-	 * @param review
-	 * @param store
-	 * @param language
-	 * @throws Exception
-	 */
-	void saveOrUpdateCustomerReview(PersistableCustomerReview review, MerchantStore store, Language language) throws Exception;
-	
-	/**
-	 * List all customer reviews by reviewed
-	 * @param customer
-	 * @param store
-	 * @param language
-	 * @return
-	 */
-	List<ReadableCustomerReview> getAllCustomerReviewsByReviewed(Customer customer, MerchantStore store, Language language) throws Exception;
-	
-	/**
-	 * Deletes a customer review
-	 * @param review
-	 * @param store
-	 * @param language
-	 */
-	void deleteCustomerReview(CustomerReview review, MerchantStore store, Language language) throws Exception;
-	
-	/**
-	 * Optin a customer to newsletter
-	 * @param optin
-	 * @param store
-	 * @throws Exception
-	 */
-	void optinCustomer(PersistableCustomerOptin optin, MerchantStore store) throws Exception;
+  public Customer getCustomerByUserName(final String userName, final MerchantStore store)
+      throws Exception;
+
+  public boolean checkIfUserExists(final String userName, final MerchantStore store)
+      throws Exception;
+
+  public PersistableCustomer registerCustomer(final PersistableCustomer customer,
+      final MerchantStore merchantStore, final Language language) throws Exception;
+
+  public Address getAddress(final Long userId, final MerchantStore merchantStore,
+      boolean isBillingAddress) throws Exception;
+
+  public void updateAddress(Long userId, MerchantStore merchantStore, Address address,
+      final Language language)
+      throws Exception;
+
+  public void setCustomerModelDefaultProperties(Customer customer, MerchantStore store)
+      throws Exception;
+  //public Customer populateCustomerModel(PersistableCustomer customer,
+  //		MerchantStore merchantStore) throws Exception;
+
+  public void authenticate(Customer customer, String userName, String password) throws Exception;
+
+  Customer getCustomerModel(PersistableCustomer customer,
+      MerchantStore merchantStore, Language language) throws Exception;
+
+  Customer populateCustomerModel(Customer customerModel, PersistableCustomer customer,
+      MerchantStore merchantStore, Language language) throws Exception;
+
+  /*
+   * Creates a Customer from a PersistableCustomer received from REST API
+   */
+  void create(PersistableCustomer customer, MerchantStore store) throws Exception;
+
+  /**
+   * Reset customer password
+   * @param customer
+   * @param store
+   * @param language
+   * @throws Exception
+   */
+  void resetPassword(Customer customer, MerchantStore store, Language language) throws Exception;
+
+  /**
+   * Updates a Customer
+   * @param customer
+   * @param store
+   * @throws Exception
+   */
+  void update(PersistableCustomer customer, MerchantStore store) throws Exception;
+
+  /**
+   * Save or update a CustomerReview
+   * @param review
+   * @param store
+   * @param language
+   * @throws Exception
+   */
+  void saveOrUpdateCustomerReview(PersistableCustomerReview review, MerchantStore store,
+      Language language) throws Exception;
+
+  /**
+   * List all customer reviews by reviewed
+   * @param customer
+   * @param store
+   * @param language
+   * @return
+   */
+  List<ReadableCustomerReview> getAllCustomerReviewsByReviewed(Customer customer,
+      MerchantStore store, Language language) throws Exception;
+
+  /**
+   * Deletes a customer review
+   * @param review
+   * @param store
+   * @param language
+   */
+  void deleteCustomerReview(CustomerReview review, MerchantStore store, Language language)
+      throws Exception;
+
+  /**
+   * Optin a customer to newsletter
+   * @param optin
+   * @param store
+   * @throws Exception
+   */
+  void optinCustomer(PersistableCustomerOptin optin, MerchantStore store) throws Exception;
 
 }

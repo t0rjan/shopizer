@@ -6,33 +6,32 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 public class ResetPasswordRequest implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * Username and password must be used when requesting password request
-	 */
-	@NotEmpty(message="{NotEmpty.customer.userName}")
-    private String username;
-    
+  /**
+   *
+   */
+  private static final long serialVersionUID = 1L;
+
+  /**
+   * Username and password must be used when requesting password request
+   */
+  @NotEmpty(message = "{NotEmpty.customer.userName}")
+  private String username;
 
 
-    public ResetPasswordRequest() {
-        super();
-    }
+  public ResetPasswordRequest() {
+    super();
+  }
 
-    public ResetPasswordRequest(String username) {
-        this.setUsername(username);
-    }
+  public ResetPasswordRequest(String username) {
+    this.setUsername(username);
+  }
 
-    public String getUsername() {
-        return this.username;
-    }
+  public String getUsername() {
+    return this.username;
+  }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+  public void setUsername(String username) {
+    this.username = username;
+  }
 
 }

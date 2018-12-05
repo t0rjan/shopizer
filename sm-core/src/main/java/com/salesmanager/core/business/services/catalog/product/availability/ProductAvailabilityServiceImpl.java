@@ -11,33 +11,32 @@ import com.salesmanager.core.model.catalog.product.availability.ProductAvailabil
 
 @Service("productAvailabilityService")
 public class ProductAvailabilityServiceImpl extends
-		SalesManagerEntityServiceImpl<Long, ProductAvailability> implements
-		ProductAvailabilityService {
+    SalesManagerEntityServiceImpl<Long, ProductAvailability> implements
+    ProductAvailabilityService {
 
-	
-	private ProductAvailabilityRepository productAvailabilityRepository;
-	
-	@Inject
-	public ProductAvailabilityServiceImpl(
-			ProductAvailabilityRepository productAvailabilityRepository) {
-			super(productAvailabilityRepository);
-			this.productAvailabilityRepository = productAvailabilityRepository;
-	}
-	
-	
-	@Override
-	public void saveOrUpdate(ProductAvailability availability) throws ServiceException {
-		
-		if(availability.getId()!=null && availability.getId()>0) {
-			
-			this.update(availability);
-			
-		} else {
-			this.create(availability);
-		}
-		
-	}
 
+  private ProductAvailabilityRepository productAvailabilityRepository;
+
+  @Inject
+  public ProductAvailabilityServiceImpl(
+      ProductAvailabilityRepository productAvailabilityRepository) {
+    super(productAvailabilityRepository);
+    this.productAvailabilityRepository = productAvailabilityRepository;
+  }
+
+
+  @Override
+  public void saveOrUpdate(ProductAvailability availability) throws ServiceException {
+
+    if (availability.getId() != null && availability.getId() > 0) {
+
+      this.update(availability);
+
+    } else {
+      this.create(availability);
+    }
+
+  }
 
 
 }

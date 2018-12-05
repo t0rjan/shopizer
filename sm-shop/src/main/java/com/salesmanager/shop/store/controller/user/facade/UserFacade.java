@@ -9,26 +9,20 @@ import com.salesmanager.shop.model.user.ReadableUser;
 
 /**
  * Access to all methods for managing users
- * @author carlsamson
  *
+ * @author carlsamson
  */
 public interface UserFacade {
-	
-	/**
-	 * Finds a User by userName
-	 * @return
-	 * @throws Exception
-	 */
-	ReadableUser findByUserName(String userName, Language lang) throws Exception;
-	
-	/**
-	 * List permissions by group
-	 * @param ids
-	 * @return
-	 * @throws Exception
-	 */
-	public List<ReadablePermission> findPermissionsByGroups(List<Integer> ids) throws Exception;
-	
-	
+
+  /**
+   * Finds a User by userName
+   */
+  ReadableUser findByUserName(String userName, Language lang) throws Exception;
+
+  /**
+   * List permissions by group
+   */
+  public List<ReadablePermission> findPermissionsByGroups(List<Integer> ids) throws Exception;
+
 
 }

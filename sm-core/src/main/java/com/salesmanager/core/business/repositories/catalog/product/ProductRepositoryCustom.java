@@ -12,33 +12,30 @@ import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.core.model.tax.taxclass.TaxClass;
 
 public interface ProductRepositoryCustom {
-	
-	
-	
-	
 
-		ProductList listByStore(MerchantStore store, Language language,
-			ProductCriteria criteria);
-		
-		 Product getByFriendlyUrl(MerchantStore store,String seUrl, Locale locale);
 
-		List<Product> getProductsListByCategories(@SuppressWarnings("rawtypes") Set categoryIds);
+  ProductList listByStore(MerchantStore store, Language language,
+      ProductCriteria criteria);
 
-		List<Product> getProductsListByCategories(Set<Long> categoryIds,
-				Language language);
+  Product getByFriendlyUrl(MerchantStore store, String seUrl, Locale locale);
 
-		List<Product> listByTaxClass(TaxClass taxClass);
+  List<Product> getProductsListByCategories(@SuppressWarnings("rawtypes") Set categoryIds);
 
-		List<Product> listByStore(MerchantStore store);
+  List<Product> getProductsListByCategories(Set<Long> categoryIds,
+      Language language);
 
-		Product getProductForLocale(long productId, Language language,
-				Locale locale);
+  List<Product> listByTaxClass(TaxClass taxClass);
 
-		Product getById(Long productId);
+  List<Product> listByStore(MerchantStore store);
 
-		Product getByCode(String productCode, Language language);
+  Product getProductForLocale(long productId, Language language,
+      Locale locale);
 
-		List<Product> getProductsForLocale(MerchantStore store,
-				Set<Long> categoryIds, Language language, Locale locale);
+  Product getById(Long productId);
+
+  Product getByCode(String productCode, Language language);
+
+  List<Product> getProductsForLocale(MerchantStore store,
+      Set<Long> categoryIds, Language language, Locale locale);
 
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.salesmanager.core.business.modules.cms.content;
 
@@ -18,13 +18,12 @@ import com.salesmanager.core.model.content.OutputContentFile;
 public class StaticContentFileManagerImpl extends StaticContentFileManager {
 
   /**
-   * 
+   *
    */
   private static final long serialVersionUID = 1L;
   private FilePut uploadFile;
   private FileGet getFile;
   private FileRemove removeFile;
-
 
 
   @Override
@@ -39,7 +38,7 @@ public class StaticContentFileManagerImpl extends StaticContentFileManager {
    * underlying CMSStaticContentManager. For CMS Content files
    * {@link CmsStaticContentFileManagerImpl} will take care of adding given content images with
    * Infinispan cache.
-   * 
+   *
    * @param merchantStoreCode merchant store.
    * @param inputStaticContentDataList Input content images
    * @throws ServiceException
@@ -80,7 +79,6 @@ public class StaticContentFileManagerImpl extends StaticContentFileManager {
   public void removeFiles(String merchantStoreCode) throws ServiceException {
     removeFile.removeFiles(merchantStoreCode);
   }
-
 
 
   public void setRemoveFile(FileRemove removeFile) {

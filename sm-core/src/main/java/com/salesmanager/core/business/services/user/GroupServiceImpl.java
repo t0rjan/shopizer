@@ -16,41 +16,41 @@ import com.salesmanager.core.model.user.GroupType;
 
 @Service("groupService")
 public class GroupServiceImpl extends
-		SalesManagerEntityServiceImpl<Integer, Group> implements GroupService {
+    SalesManagerEntityServiceImpl<Integer, Group> implements GroupService {
 
-	GroupRepository groupRepository;
-
-
-	@Inject
-	public GroupServiceImpl(GroupRepository groupRepository) {
-		super(groupRepository);
-		this.groupRepository = groupRepository;
-
-	}
+  GroupRepository groupRepository;
 
 
-	@Override
-	public List<Group> listGroup(GroupType groupType) throws ServiceException {
-		try {
-			return groupRepository.findByType(groupType);
-		} catch (Exception e) {
-			throw new ServiceException(e);
-		}
-	}
-	
-	public List<Group> listGroupByIds(Set<Integer> ids) throws ServiceException {
-		try {
-			return groupRepository.findByIds(ids);
-		} catch (Exception e) {
-			throw new ServiceException(e);
-		}
-	}
+  @Inject
+  public GroupServiceImpl(GroupRepository groupRepository) {
+    super(groupRepository);
+    this.groupRepository = groupRepository;
+
+  }
 
 
-	@Override
-	public Group findByName(String groupName) throws ServiceException {
-		return groupRepository.findByGroupName(groupName);
-	}
+  @Override
+  public List<Group> listGroup(GroupType groupType) throws ServiceException {
+    try {
+      return groupRepository.findByType(groupType);
+    } catch (Exception e) {
+      throw new ServiceException(e);
+    }
+  }
+
+  public List<Group> listGroupByIds(Set<Integer> ids) throws ServiceException {
+    try {
+      return groupRepository.findByIds(ids);
+    } catch (Exception e) {
+      throw new ServiceException(e);
+    }
+  }
+
+
+  @Override
+  public Group findByName(String groupName) throws ServiceException {
+    return groupRepository.findByGroupName(groupName);
+  }
 
 
 }

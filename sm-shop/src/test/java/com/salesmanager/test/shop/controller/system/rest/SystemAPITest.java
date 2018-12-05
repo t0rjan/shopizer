@@ -17,74 +17,73 @@ import java.util.List;
 
 @Ignore
 public class SystemAPITest {
-	
-	private RestTemplate restTemplate;
+
+  private RestTemplate restTemplate;
 
 
-	private HttpHeaders getHeader(){
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);//IMPORTANT TO HAVE THIS
-		MediaType mediaType = new MediaType("application", "json", Charset.forName("UTF-8"));
-		//MediaType.APPLICATION_JSON //for application/json
-		headers.setContentType(mediaType);
-		//Basic Authentication
-		String authorisation = "admin" + ":" + "password";
-		byte[] encodedAuthorisation = Base64.encode(authorisation.getBytes());
-		headers.add("Authorization", "Basic " + new String(encodedAuthorisation));
-		return headers;
-	}
-	
-	/**
-	 * Contact us email
-	 * @throws Exception
-	 */
-	//@Test
-	@Ignore
-	public void createIntegrationModule() throws Exception {
-		restTemplate = new RestTemplate();
-		
-		String json = 
-				
-	"{"
-	+	"\"module\":\"PAYMENT\","
-	+	"\"code\":\"braintree\","
-	+	"\"type\":\"creditcard\","
-	+	"\"version\":\"1.0\","
-	+	"\"regions\":[\"US\",\"CA\",\"GB\",\"AU\",\"FI\",\"DK\",\"IE\",\"NO\",\"SE\",\"AL\",\"AD\",\"AT\",\"BY\",\"BE\",\"BG\",\"HY\",\"CY\",\"CZ\",\"FR\",\"GR\",\"IS\",\"IE\",\"IM\",\"IT\",\"PL\",\"LU\",\"CH\",\"RS\",\"SG\",\"MY\",\"HK\",\"NZ\"],"
-	+	"\"image\":\"braintree.jpg\","
-	+	"\"configuration\":[{\"env\":\"TEST\",\"scheme\":\"https\",\"host\":\"NOT_REQUIRED\",\"port\":\"NOT_REQUIRED\",\"uri\":\"/\"},{\"env\":\"PROD\",\"scheme\":\"https\",\"host\":\"NOT_REQUIRED\",\"port\":\"NOT_REQUIRED\",\"uri\":\"/\"}]"
-	+"}";
+  private HttpHeaders getHeader() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);//IMPORTANT TO HAVE THIS
+    MediaType mediaType = new MediaType("application", "json", Charset.forName("UTF-8"));
+    //MediaType.APPLICATION_JSON //for application/json
+    headers.setContentType(mediaType);
+    //Basic Authentication
+    String authorisation = "admin" + ":" + "password";
+    byte[] encodedAuthorisation = Base64.encode(authorisation.getBytes());
+    headers.add("Authorization", "Basic " + new String(encodedAuthorisation));
+    return headers;
+  }
 
-		
-		/**
-		"{"
-		+	"\"module\":\"SHIPPING\","
-		+	"\"code\":\"priceByDistance\","
-		+	"\"version\":\"1.0\","
-		+	"\"regions\":[\"*\"]"
-		+"}";
-		**/
-		
+  /**
+   * Contact us email
+   */
+  //@Test
+  @Ignore
+  public void createIntegrationModule() throws Exception {
+    restTemplate = new RestTemplate();
 
-		System.out.println(json);
-		
-		List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
-		//messageConverters.add(new FormHttpMessageConverter());
-		//messageConverters.add(new StringHttpMessageConverter());
-		messageConverters.add(new MappingJackson2HttpMessageConverter());
-		
-		restTemplate.setMessageConverters(messageConverters);
-		
-		HttpEntity<String> httpEntity = new HttpEntity<String>(json, getHeader());
-		
-		ResponseEntity<AjaxResponse> response = restTemplate.exchange("http://localhost:8080/services/private/system/module", HttpMethod.POST, httpEntity, AjaxResponse.class);
-		
-		if(response.getStatusCode() != HttpStatus.OK){
-			throw new Exception();
-		}else{
-			System.out.println(response.getBody() + " Success creating module");
-		}
-	}
-	
-		
+    String json =
+
+        "{"
+            + "\"module\":\"PAYMENT\","
+            + "\"code\":\"braintree\","
+            + "\"type\":\"creditcard\","
+            + "\"version\":\"1.0\","
+            + "\"regions\":[\"US\",\"CA\",\"GB\",\"AU\",\"FI\",\"DK\",\"IE\",\"NO\",\"SE\",\"AL\",\"AD\",\"AT\",\"BY\",\"BE\",\"BG\",\"HY\",\"CY\",\"CZ\",\"FR\",\"GR\",\"IS\",\"IE\",\"IM\",\"IT\",\"PL\",\"LU\",\"CH\",\"RS\",\"SG\",\"MY\",\"HK\",\"NZ\"],"
+            + "\"image\":\"braintree.jpg\","
+            + "\"configuration\":[{\"env\":\"TEST\",\"scheme\":\"https\",\"host\":\"NOT_REQUIRED\",\"port\":\"NOT_REQUIRED\",\"uri\":\"/\"},{\"env\":\"PROD\",\"scheme\":\"https\",\"host\":\"NOT_REQUIRED\",\"port\":\"NOT_REQUIRED\",\"uri\":\"/\"}]"
+            + "}";
+
+    /**
+     "{"
+     +	"\"module\":\"SHIPPING\","
+     +	"\"code\":\"priceByDistance\","
+     +	"\"version\":\"1.0\","
+     +	"\"regions\":[\"*\"]"
+     +"}";
+     **/
+
+    System.out.println(json);
+
+    List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
+    //messageConverters.add(new FormHttpMessageConverter());
+    //messageConverters.add(new StringHttpMessageConverter());
+    messageConverters.add(new MappingJackson2HttpMessageConverter());
+
+    restTemplate.setMessageConverters(messageConverters);
+
+    HttpEntity<String> httpEntity = new HttpEntity<String>(json, getHeader());
+
+    ResponseEntity<AjaxResponse> response = restTemplate
+        .exchange("http://localhost:8080/services/private/system/module", HttpMethod.POST,
+            httpEntity, AjaxResponse.class);
+
+    if (response.getStatusCode() != HttpStatus.OK) {
+      throw new Exception();
+    } else {
+      System.out.println(response.getBody() + " Success creating module");
+    }
+  }
+
+
 }

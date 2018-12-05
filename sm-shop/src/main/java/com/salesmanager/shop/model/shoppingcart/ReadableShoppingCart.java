@@ -8,137 +8,118 @@ import com.salesmanager.shop.model.order.total.ReadableOrderTotal;
 
 /**
  * Compatible with v1
- * @author c.samson
  *
+ * @author c.samson
  */
 public class ReadableShoppingCart extends ShoppingCartEntity {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	private String code;
-	private BigDecimal subtotal;
+  /**
+   *
+   */
+  private static final long serialVersionUID = 1L;
+
+  private String code;
+  private BigDecimal subtotal;
 
 
-	private String displaySubTotal;
-	private BigDecimal total;
-	private String displayTotal;
-	private int quantity;
-	
-	List<ReadableShoppingCartItem> products = new ArrayList<ReadableShoppingCartItem>();
-	List<ReadableOrderTotal> totals;
-	
-	private Long customer;
+  private String displaySubTotal;
+  private BigDecimal total;
+  private String displayTotal;
+  private int quantity;
+
+  List<ReadableShoppingCartItem> products = new ArrayList<ReadableShoppingCartItem>();
+  List<ReadableOrderTotal> totals;
+
+  private Long customer;
 
 
-
-	public Long getCustomer() {
-		return customer;
-	}
-
+  public Long getCustomer() {
+    return customer;
+  }
 
 
-	public void setCustomer(Long customer) {
-		this.customer = customer;
-	}
+  public void setCustomer(Long customer) {
+    this.customer = customer;
+  }
 
 
-
-	public List<ReadableOrderTotal> getTotals() {
-		return totals;
-	}
-
+  public List<ReadableOrderTotal> getTotals() {
+    return totals;
+  }
 
 
-	public void setTotals(List<ReadableOrderTotal> totals) {
-		this.totals = totals;
-	}
+  public void setTotals(List<ReadableOrderTotal> totals) {
+    this.totals = totals;
+  }
 
 
-
-	public List<ReadableShoppingCartItem> getProducts() {
-		return products;
-	}
-
+  public List<ReadableShoppingCartItem> getProducts() {
+    return products;
+  }
 
 
-	public void setProducts(List<ReadableShoppingCartItem> products) {
-		this.products = products;
-	}
+  public void setProducts(List<ReadableShoppingCartItem> products) {
+    this.products = products;
+  }
 
 
-
-	public String getCode() {
-		return code;
-	}
-
+  public String getCode() {
+    return code;
+  }
 
 
-	public void setCode(String code) {
-		this.code = code;
-	}
-	
-	public BigDecimal getSubtotal() {
-		return subtotal;
-	}
+  public void setCode(String code) {
+    this.code = code;
+  }
+
+  public BigDecimal getSubtotal() {
+    return subtotal;
+  }
 
 
-
-	public void setSubtotal(BigDecimal subtotal) {
-		this.subtotal = subtotal;
-	}
-
+  public void setSubtotal(BigDecimal subtotal) {
+    this.subtotal = subtotal;
+  }
 
 
-	public String getDisplaySubTotal() {
-		return displaySubTotal;
-	}
+  public String getDisplaySubTotal() {
+    return displaySubTotal;
+  }
 
 
-
-	public void setDisplaySubTotal(String displaySubTotal) {
-		this.displaySubTotal = displaySubTotal;
-	}
-
+  public void setDisplaySubTotal(String displaySubTotal) {
+    this.displaySubTotal = displaySubTotal;
+  }
 
 
-	public BigDecimal getTotal() {
-		return total;
-	}
+  public BigDecimal getTotal() {
+    return total;
+  }
 
 
-
-	public void setTotal(BigDecimal total) {
-		this.total = total;
-	}
-
+  public void setTotal(BigDecimal total) {
+    this.total = total;
+  }
 
 
-	public String getDisplayTotal() {
-		return displayTotal;
-	}
+  public String getDisplayTotal() {
+    return displayTotal;
+  }
 
 
-
-	public void setDisplayTotal(String displayTotal) {
-		this.displayTotal = displayTotal;
-	}
-
+  public void setDisplayTotal(String displayTotal) {
+    this.displayTotal = displayTotal;
+  }
 
 
-	public int getQuantity() {
-		return quantity;
-	}
+  public int getQuantity() {
+    return quantity;
+  }
 
 
-
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
-	}
-
-
+  public void setQuantity(int quantity) {
+    this.quantity = quantity;
+  }
 
 
 }

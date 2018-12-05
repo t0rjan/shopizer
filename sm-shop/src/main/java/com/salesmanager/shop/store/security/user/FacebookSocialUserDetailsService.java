@@ -25,40 +25,38 @@ import com.salesmanager.core.model.customer.Customer;
 public class FacebookSocialUserDetailsService implements SocialUserDetailsService {
 
 
-	@Inject UserDetailsService customerDetailsService;//delegate to current customer
-
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(FacebookSocialUserDetailsService.class);
+  @Inject
+  UserDetailsService customerDetailsService;//delegate to current customer
 
 
-	@Override
-	public SocialUserDetails loadUserByUserId(String userId) throws UsernameNotFoundException {
-
-		
-		CustomerDetails userDetails = (CustomerDetails) customerDetailsService.loadUserByUsername(userId);
-		
-		if (userDetails == null) {
-			throw new UsernameNotFoundException("No user found with username: " + userId);
-		}
-		
-		FacebookTokenUserDetails principal = new FacebookTokenUserDetails(
-				userDetails.getUsername(),
-				userDetails.getPassword(),
-				userDetails.getAuthorities());
-		
-		principal.setFirstName(userDetails.getFirstName());
-		principal.setId(String.valueOf(userDetails.getId()));
-		principal.setLastName(userDetails.getLastName());
-
-		LOGGER.debug("Found user details: {}", principal);
-
-		return principal;
-
-	}
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(FacebookSocialUserDetailsService.class);
 
 
+  @Override
+  public SocialUserDetails loadUserByUserId(String userId) throws UsernameNotFoundException {
 
+    CustomerDetails userDetails = (CustomerDetails) customerDetailsService
+        .loadUserByUsername(userId);
 
+    if (userDetails == null) {
+      throw new UsernameNotFoundException("No user found with username: " + userId);
+    }
+
+    FacebookTokenUserDetails principal = new FacebookTokenUserDetails(
+        userDetails.getUsername(),
+        userDetails.getPassword(),
+        userDetails.getAuthorities());
+
+    principal.setFirstName(userDetails.getFirstName());
+    principal.setId(String.valueOf(userDetails.getId()));
+    principal.setLastName(userDetails.getLastName());
+
+    LOGGER.debug("Found user details: {}", principal);
+
+    return principal;
+
+  }
 
 
 }

@@ -22,93 +22,78 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class ErrorController {
-	
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ErrorController.class);
-	
-	/**
-	 * For API exceptions
-	 * @param ex
-	 * @return
-	 */
-	@ExceptionHandler({org.springframework.web.HttpRequestMethodNotSupportedException.class,org.springframework.web.bind.MethodArgumentNotValidException.class})
-	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	public Map<String,String> handleAPIException(Exception ex, WebRequest request) {
 
 
-		Map<String,String> error = new HashMap<String,String>();
-		error.put("error", ex.getMessage());
-		
-		
-        
-        return error;
- 
-	}
-    
-	@ExceptionHandler(Exception.class)
-	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	public ModelAndView handleException(Exception ex) {
-		
-		LOGGER.error("Error page controller",ex);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ErrorController.class);
 
-		ModelAndView model = null;
-		if(ex instanceof AccessDeniedException) {
-			
-			model = new ModelAndView("error/access_denied");
-			
-		} else {
-			
-			model = new ModelAndView("error/generic_error");
-			model.addObject("stackError", ExceptionUtils.getStackTrace(ex));
-			model.addObject("errMsg", ex.getMessage());
-			
-		}
-		
-		
- 
-		return model;
- 
-	}
-	
+  /**
+   * For API exceptions
+   */
+  @ExceptionHandler({org.springframework.web.HttpRequestMethodNotSupportedException.class,
+      org.springframework.web.bind.MethodArgumentNotValidException.class})
+  @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+  public Map<String, String> handleAPIException(Exception ex, WebRequest request) {
 
-	
-	@ExceptionHandler(RuntimeException.class)
-	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	public ModelAndView handleRuntimeException(Exception ex) {
-		
-		LOGGER.error("Error page controller",ex);
-		
-		ModelAndView model = null;
+    Map<String, String> error = new HashMap<String, String>();
+    error.put("error", ex.getMessage());
 
-			
-		model = new ModelAndView("error/generic_error");
-		model.addObject("stackError", ExceptionUtils.getStackTrace(ex));
-		model.addObject("errMsg", ex.getMessage());
+    return error;
 
-		
-		
- 
-		return model;
- 
-	}
-	
-	/**
-	 * Generic exception catch allpage
-	 * @param ex
-	 * @return
-	 */
-	@RequestMapping(value="/error", method=RequestMethod.GET)
-	public ModelAndView handleCatchAllException(Model model) {
+  }
 
-		
-		ModelAndView modelAndView = null;
+  @ExceptionHandler(Exception.class)
+  @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+  public ModelAndView handleException(Exception ex) {
 
-			
-		modelAndView = new ModelAndView("error/generic_error");
- 
-		return modelAndView;
- 
-	}
+    LOGGER.error("Error page controller", ex);
+
+    ModelAndView model = null;
+    if (ex instanceof AccessDeniedException) {
+
+      model = new ModelAndView("error/access_denied");
+
+    } else {
+
+      model = new ModelAndView("error/generic_error");
+      model.addObject("stackError", ExceptionUtils.getStackTrace(ex));
+      model.addObject("errMsg", ex.getMessage());
+
+    }
+
+    return model;
+
+  }
+
+
+  @ExceptionHandler(RuntimeException.class)
+  @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+  public ModelAndView handleRuntimeException(Exception ex) {
+
+    LOGGER.error("Error page controller", ex);
+
+    ModelAndView model = null;
+
+    model = new ModelAndView("error/generic_error");
+    model.addObject("stackError", ExceptionUtils.getStackTrace(ex));
+    model.addObject("errMsg", ex.getMessage());
+
+    return model;
+
+  }
+
+  /**
+   * Generic exception catch allpage
+   */
+  @RequestMapping(value = "/error", method = RequestMethod.GET)
+  public ModelAndView handleCatchAllException(Model model) {
+
+    ModelAndView modelAndView = null;
+
+    modelAndView = new ModelAndView("error/generic_error");
+
+    return modelAndView;
+
+  }
 	
 
     

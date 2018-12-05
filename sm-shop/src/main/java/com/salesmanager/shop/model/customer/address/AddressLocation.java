@@ -4,19 +4,19 @@ import java.io.Serializable;
 
 public class AddressLocation implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	private String postalCode;
-	
-	public String getPostalCode() {
-		return postalCode;
-	}
+  /**
+   *
+   */
+  private static final long serialVersionUID = 1L;
 
-	public void setPostalCode(String postalCode) {
-		this.postalCode = postalCode;
-	}
+  private String postalCode;
+
+  public String getPostalCode() {
+    return postalCode;
+  }
+
+  public void setPostalCode(String postalCode) {
+    this.postalCode = postalCode;
+  }
 
 }

@@ -14,5 +14,5 @@ import com.salesmanager.core.business.configuration.DroolsConfiguration;
 @ImportResource("spring/test-shopizer-context.xml")
 @Import(DroolsConfiguration.class)
 public class ConfigurationTest {
-	
+
 }

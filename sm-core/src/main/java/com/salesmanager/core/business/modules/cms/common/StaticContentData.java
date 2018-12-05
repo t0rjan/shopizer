@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.salesmanager.core.business.modules.cms.common;
 
@@ -10,7 +10,7 @@ import com.salesmanager.core.model.content.FileContentType;
 /**
  * Abstract class for Static content data containing common attributes for handling static content
  * data.
- * 
+ *
  * @author Umesh Awasthi
  * @since 1.2
  */

@@ -37,23 +37,23 @@ import io.swagger.annotations.ApiOperation;
 @Controller
 @RequestMapping("/api/v1")
 public class ProductRelationshipApi {
-	
-	@Inject
-	private ProductFacade productFacade;
-	
-	@Inject
-	private StoreFacade storeFacade;
-	
-	@Inject
-	private LanguageUtils languageUtils;
-	
-	@Inject
-	private ProductService productService;
-	
-	@Inject
-	private ProductReviewService productReviewService;
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ProductRelationshipApi.class);
+
+  @Inject
+  private ProductFacade productFacade;
+
+  @Inject
+  private StoreFacade storeFacade;
+
+  @Inject
+  private LanguageUtils languageUtils;
+
+  @Inject
+  private ProductService productService;
+
+  @Inject
+  private ProductReviewService productReviewService;
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProductRelationshipApi.class);
 	
 	
 	
@@ -99,43 +99,42 @@ public class ProductRelationshipApi {
 			return null;
 		}
 	}*/
-	
-	@RequestMapping( value="/products/{id}/related", method=RequestMethod.GET)
-	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(httpMethod = "GET", value = "Get product related items. This is used for doing cross-sell and up-sell functionality on a product details page", notes = "", produces = "application/json", response = List.class)
-	@ResponseBody
-	public List<ReadableProduct> getAll(@PathVariable final Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		
-		try {
-			
-			MerchantStore merchantStore = storeFacade.getByCode(request);
-			Language language = languageUtils.getRESTLanguage(request, merchantStore);	
-			
-			//product exist
-			Product product = productService.getById(id);
+  @RequestMapping(value = "/products/{id}/related", method = RequestMethod.GET)
+  @ResponseStatus(HttpStatus.OK)
+  @ApiOperation(httpMethod = "GET", value = "Get product related items. This is used for doing cross-sell and up-sell functionality on a product details page", notes = "", produces = "application/json", response = List.class)
+  @ResponseBody
+  public List<ReadableProduct> getAll(@PathVariable final Long id, HttpServletRequest request,
+      HttpServletResponse response) throws Exception {
 
-			if(product==null) {
-				response.sendError(404, "Product id " + id + " does not exists");
-				return null;
-			}
-			
+    try {
 
+      MerchantStore merchantStore = storeFacade.getByCode(request);
+      Language language = languageUtils.getRESTLanguage(request, merchantStore);
 
-			List<ReadableProduct> relatedItems = productFacade.relatedItems(merchantStore, product, language);
-			
-			return relatedItems;
-			
-		} catch (Exception e) {
-			LOGGER.error("Error while getting product reviews",e);
-			try {
-				response.sendError(503, "Error while getting product reviews" + e.getMessage());
-			} catch (Exception ignore) {
-			}
-			
-			return null;
-		}
-	}
+      //product exist
+      Product product = productService.getById(id);
+
+      if (product == null) {
+        response.sendError(404, "Product id " + id + " does not exists");
+        return null;
+      }
+
+      List<ReadableProduct> relatedItems = productFacade
+          .relatedItems(merchantStore, product, language);
+
+      return relatedItems;
+
+    } catch (Exception e) {
+      LOGGER.error("Error while getting product reviews", e);
+      try {
+        response.sendError(503, "Error while getting product reviews" + e.getMessage());
+      } catch (Exception ignore) {
+      }
+
+      return null;
+    }
+  }
 	
 /*	
 	@RequestMapping( value={"/private/products/{id}/reviews/{reviewid}","/auth/products/{id}/reviews/{reviewid}"}, method=RequestMethod.PUT)

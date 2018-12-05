@@ -14,5 +14,4 @@ public interface ProductImageRemove extends ImageRemove {
   public void removeProductImages(Product product) throws ServiceException;
 
 
-
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.salesmanager.core.model.shoppingcart;
 
@@ -40,109 +40,108 @@ import com.salesmanager.core.model.merchant.MerchantStore;
  */
 @Entity
 @EntityListeners(value = AuditListener.class)
-@Table(name = "SHOPPING_CART", schema=SchemaConstant.SALESMANAGER_SCHEMA, indexes= { @Index(name = "SHP_CART_CODE_IDX", columnList = "SHP_CART_CODE"), @Index(name = "SHP_CART_CUSTOMER_IDX", columnList = "CUSTOMER_ID")})
-public class ShoppingCart extends SalesManagerEntity<Long, ShoppingCart> implements Auditable{
-
-	
-	private static final long serialVersionUID = 1L;
-	
-	@Embedded
-	private AuditSection auditSection = new AuditSection();
-	
-	@Id
-	@Column(name = "SHP_CART_ID", unique=true, nullable=false)
-	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "SHP_CRT_SEQ_NEXT_VAL")
-	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
-	private Long id;
-	
-	/**
-	 * Will be used to fetch shopping cart model from the controller
-	 * this is a unique code that should be attributed from the client (UI)
-	 * 
-	 */
-	@Column(name = "SHP_CART_CODE", unique=true, nullable=false)
-	private String shoppingCartCode;
-	
-	//@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "shoppingCart")
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "shoppingCart")
-	private Set<ShoppingCartItem> lineItems = new HashSet<ShoppingCartItem>();
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="MERCHANT_ID", nullable=false)
-	private MerchantStore merchantStore;
-	
-	@Column(name = "CUSTOMER_ID", nullable = true)
-	private Long customerId;
-	
-	@Transient
-	private boolean obsolete = false;//when all items are obsolete
-    
-	@Override
-	public AuditSection getAuditSection() {
-		return auditSection;
-	}
-
-	@Override
-	public void setAuditSection(AuditSection audit) {
-		this.auditSection = audit;
-		
-	}
-	
-	@Override
-	public Long getId() {
-		return id;
-	}
-
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-		
-	}
-	
-
-	public boolean isObsolete() {
-		return obsolete;
-	}
-
-	public void setObsolete(boolean obsolete) {
-		this.obsolete = obsolete;
-	}
-
-	public Set<ShoppingCartItem> getLineItems() {
-		return lineItems;
-	}
-
-	public void setLineItems(Set<ShoppingCartItem> lineItems) {
-		this.lineItems = lineItems;
-	}
-
-    public String getShoppingCartCode()
-    {
-        return shoppingCartCode;
-    }
-
-    public void setShoppingCartCode( String shoppingCartCode )
-    {
-        this.shoppingCartCode = shoppingCartCode;
-    }
+@Table(name = "SHOPPING_CART", schema = SchemaConstant.SALESMANAGER_SCHEMA, indexes = {
+    @Index(name = "SHP_CART_CODE_IDX", columnList = "SHP_CART_CODE"),
+    @Index(name = "SHP_CART_CUSTOMER_IDX", columnList = "CUSTOMER_ID")})
+public class ShoppingCart extends SalesManagerEntity<Long, ShoppingCart> implements Auditable {
 
 
-	public void setCustomerId(Long customerId) {
-		this.customerId = customerId;
-	}
+  private static final long serialVersionUID = 1L;
 
-	public Long getCustomerId() {
-		return customerId;
-	}
+  @Embedded
+  private AuditSection auditSection = new AuditSection();
 
-	public void setMerchantStore(MerchantStore merchantStore) {
-		this.merchantStore = merchantStore;
-	}
+  @Id
+  @Column(name = "SHP_CART_ID", unique = true, nullable = false)
+  @TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "SHP_CRT_SEQ_NEXT_VAL")
+  @GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
+  private Long id;
 
-	public MerchantStore getMerchantStore() {
-		return merchantStore;
-	}
+  /**
+   * Will be used to fetch shopping cart model from the controller
+   * this is a unique code that should be attributed from the client (UI)
+   *
+   */
+  @Column(name = "SHP_CART_CODE", unique = true, nullable = false)
+  private String shoppingCartCode;
 
+  //@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "shoppingCart")
+  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "shoppingCart")
+  private Set<ShoppingCartItem> lineItems = new HashSet<ShoppingCartItem>();
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "MERCHANT_ID", nullable = false)
+  private MerchantStore merchantStore;
+
+  @Column(name = "CUSTOMER_ID", nullable = true)
+  private Long customerId;
+
+  @Transient
+  private boolean obsolete = false;//when all items are obsolete
+
+  @Override
+  public AuditSection getAuditSection() {
+    return auditSection;
+  }
+
+  @Override
+  public void setAuditSection(AuditSection audit) {
+    this.auditSection = audit;
+
+  }
+
+  @Override
+  public Long getId() {
+    return id;
+  }
+
+  @Override
+  public void setId(Long id) {
+    this.id = id;
+
+  }
+
+
+  public boolean isObsolete() {
+    return obsolete;
+  }
+
+  public void setObsolete(boolean obsolete) {
+    this.obsolete = obsolete;
+  }
+
+  public Set<ShoppingCartItem> getLineItems() {
+    return lineItems;
+  }
+
+  public void setLineItems(Set<ShoppingCartItem> lineItems) {
+    this.lineItems = lineItems;
+  }
+
+  public String getShoppingCartCode() {
+    return shoppingCartCode;
+  }
+
+  public void setShoppingCartCode(String shoppingCartCode) {
+    this.shoppingCartCode = shoppingCartCode;
+  }
+
+
+  public void setCustomerId(Long customerId) {
+    this.customerId = customerId;
+  }
+
+  public Long getCustomerId() {
+    return customerId;
+  }
+
+  public void setMerchantStore(MerchantStore merchantStore) {
+    this.merchantStore = merchantStore;
+  }
+
+  public MerchantStore getMerchantStore() {
+    return merchantStore;
+  }
 
 
 }

@@ -6,9 +6,8 @@ import java.util.Locale;
 
 /**
  * Constants used for sm-core
- * 
- * @author carlsamson
  *
+ * @author carlsamson
  */
 public class Constants {
 

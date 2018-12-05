@@ -32,124 +32,126 @@ import com.salesmanager.core.modules.integration.shipping.model.ShippingQuotePre
 
 /**
  * Decides which shipping method is going to be used based on a decision table
- * @author carlsamson
  *
+ * @author carlsamson
  */
 public class ShippingDecisionPreProcessorImpl implements ShippingQuotePrePostProcessModule {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ShippingDecisionPreProcessorImpl.class);
-	
-	private final static String MODULE_CODE = "shippingDecisionModule";
-	
-	//private StatelessKnowledgeSession shippingMethodDecision;
-	
-	//private KnowledgeBase kbase;
-	
-	@Inject
-	KieContainer kieShippingDecisionContainer;
-	
-	@Override
-	public void prePostProcessShippingQuotes(ShippingQuote quote,
-			List<PackageDetails> packages, BigDecimal orderTotal,
-			Delivery delivery, ShippingOrigin origin, MerchantStore store,
-			IntegrationConfiguration globalShippingConfiguration,
-			IntegrationModule currentModule,
-			ShippingConfiguration shippingConfiguration,
-			List<IntegrationModule> allModules, Locale locale)
-			throws IntegrationException {
-		
-		
-		Validate.notNull(delivery, "Delivery cannot be null");
-		Validate.notNull(currentModule, "IntegrationModule cannot be null");
-		Validate.notNull(delivery.getCountry(), "Delivery.country cannot be null");
-		Validate.notNull(allModules, "List<IntegrationModule> cannot be null");
-		Validate.notNull(packages, "packages cannot be null");
-		Validate.notEmpty(packages, "packages cannot be empty");
-		
-		Double distance = null;
-		
-		if(quote!=null) {
-			//look if distance has been calculated
-			if(quote.getQuoteInformations()!=null) {
-				if(quote.getQuoteInformations().containsKey(Constants.DISTANCE_KEY)) {
-					distance = (Double)quote.getQuoteInformations().get(Constants.DISTANCE_KEY);
-				}
-			}
-		}
-		
-		//calculate volume (L x W x H)
-		Double volume = null;
-		Double weight = 0D;
-		Double size = null;
-		//calculate weight, volume and largest size
-		for(PackageDetails pack : packages) {
-			weight = weight + pack.getShippingWeight();
-			Double tmpVolume = pack.getShippingHeight() * pack.getShippingLength() * pack.getShippingWidth();
-			if(volume == null || tmpVolume.doubleValue() > volume.doubleValue()) { //take the largest volume
-				volume = tmpVolume;
-			} 
-			//largest size
-			List<Double> sizeList = new ArrayList<Double>();
-			sizeList.add(pack.getShippingHeight());
-			sizeList.add(pack.getShippingLength());
-			sizeList.add(pack.getShippingWidth());
-			Double maxSize = (Double)Collections.max(sizeList);
-			if(size==null || maxSize.doubleValue() > size.doubleValue()) {
-				size = maxSize.doubleValue();
-			}
-		}
-		
-		//Build a ShippingInputParameters
-		ShippingInputParameters inputParameters = new ShippingInputParameters();
-		
-		inputParameters.setWeight((long)weight.doubleValue());
-		inputParameters.setCountry(delivery.getCountry().getIsoCode());
-		if(delivery.getZone()!=null) {
-			inputParameters.setProvince(delivery.getZone().getCode());
-		} else {
-			inputParameters.setProvince(delivery.getState());
-		}
-		//inputParameters.setModuleName(currentModule.getCode());
-		
-		if(delivery.getZone().getCode()!=null) {
-			inputParameters.setProvince(delivery.getZone().getCode());
-		}
-		
-		if(size!=null) {
-			inputParameters.setSize((long)size.doubleValue());
-		}
-		
-		if(distance!=null) {
-			double ddistance = distance.doubleValue();
-			long ldistance = (long)ddistance;
-			inputParameters.setDistance(ldistance);
-		}
-		
-		if(volume!=null) {
-			inputParameters.setVolume((long)volume.doubleValue());
-		}
-		
-		LOGGER.debug("Setting input parameters " + inputParameters.toString());
-		System.out.println(inputParameters.toString());
-		
-        KieSession kieSession = kieShippingDecisionContainer.newKieSession();
-        kieSession.insert(inputParameters);
-        kieSession.fireAllRules();
-		
-		//shippingMethodDecision.execute(Arrays.asList(new Object[] { inputParameters }));
-		
-		LOGGER.debug("Using shipping nodule " + inputParameters.getModuleName());
-		
-		if(!StringUtils.isBlank(inputParameters.getModuleName())) {
-			for(IntegrationModule toBeUsed : allModules) {
-				if(toBeUsed.getCode().equals(inputParameters.getModuleName())) {
-					quote.setCurrentShippingModule(toBeUsed);
-					break;
-				}
-			}
-		}
-		
-	}
+
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(ShippingDecisionPreProcessorImpl.class);
+
+  private final static String MODULE_CODE = "shippingDecisionModule";
+
+  //private StatelessKnowledgeSession shippingMethodDecision;
+
+  //private KnowledgeBase kbase;
+
+  @Inject
+  KieContainer kieShippingDecisionContainer;
+
+  @Override
+  public void prePostProcessShippingQuotes(ShippingQuote quote,
+      List<PackageDetails> packages, BigDecimal orderTotal,
+      Delivery delivery, ShippingOrigin origin, MerchantStore store,
+      IntegrationConfiguration globalShippingConfiguration,
+      IntegrationModule currentModule,
+      ShippingConfiguration shippingConfiguration,
+      List<IntegrationModule> allModules, Locale locale)
+      throws IntegrationException {
+
+    Validate.notNull(delivery, "Delivery cannot be null");
+    Validate.notNull(currentModule, "IntegrationModule cannot be null");
+    Validate.notNull(delivery.getCountry(), "Delivery.country cannot be null");
+    Validate.notNull(allModules, "List<IntegrationModule> cannot be null");
+    Validate.notNull(packages, "packages cannot be null");
+    Validate.notEmpty(packages, "packages cannot be empty");
+
+    Double distance = null;
+
+    if (quote != null) {
+      //look if distance has been calculated
+      if (quote.getQuoteInformations() != null) {
+        if (quote.getQuoteInformations().containsKey(Constants.DISTANCE_KEY)) {
+          distance = (Double) quote.getQuoteInformations().get(Constants.DISTANCE_KEY);
+        }
+      }
+    }
+
+    //calculate volume (L x W x H)
+    Double volume = null;
+    Double weight = 0D;
+    Double size = null;
+    //calculate weight, volume and largest size
+    for (PackageDetails pack : packages) {
+      weight = weight + pack.getShippingWeight();
+      Double tmpVolume =
+          pack.getShippingHeight() * pack.getShippingLength() * pack.getShippingWidth();
+      if (volume == null || tmpVolume.doubleValue() > volume
+          .doubleValue()) { //take the largest volume
+        volume = tmpVolume;
+      }
+      //largest size
+      List<Double> sizeList = new ArrayList<Double>();
+      sizeList.add(pack.getShippingHeight());
+      sizeList.add(pack.getShippingLength());
+      sizeList.add(pack.getShippingWidth());
+      Double maxSize = (Double) Collections.max(sizeList);
+      if (size == null || maxSize.doubleValue() > size.doubleValue()) {
+        size = maxSize.doubleValue();
+      }
+    }
+
+    //Build a ShippingInputParameters
+    ShippingInputParameters inputParameters = new ShippingInputParameters();
+
+    inputParameters.setWeight((long) weight.doubleValue());
+    inputParameters.setCountry(delivery.getCountry().getIsoCode());
+    if (delivery.getZone() != null) {
+      inputParameters.setProvince(delivery.getZone().getCode());
+    } else {
+      inputParameters.setProvince(delivery.getState());
+    }
+    //inputParameters.setModuleName(currentModule.getCode());
+
+    if (delivery.getZone().getCode() != null) {
+      inputParameters.setProvince(delivery.getZone().getCode());
+    }
+
+    if (size != null) {
+      inputParameters.setSize((long) size.doubleValue());
+    }
+
+    if (distance != null) {
+      double ddistance = distance.doubleValue();
+      long ldistance = (long) ddistance;
+      inputParameters.setDistance(ldistance);
+    }
+
+    if (volume != null) {
+      inputParameters.setVolume((long) volume.doubleValue());
+    }
+
+    LOGGER.debug("Setting input parameters " + inputParameters.toString());
+    System.out.println(inputParameters.toString());
+
+    KieSession kieSession = kieShippingDecisionContainer.newKieSession();
+    kieSession.insert(inputParameters);
+    kieSession.fireAllRules();
+
+    //shippingMethodDecision.execute(Arrays.asList(new Object[] { inputParameters }));
+
+    LOGGER.debug("Using shipping nodule " + inputParameters.getModuleName());
+
+    if (!StringUtils.isBlank(inputParameters.getModuleName())) {
+      for (IntegrationModule toBeUsed : allModules) {
+        if (toBeUsed.getCode().equals(inputParameters.getModuleName())) {
+          quote.setCurrentShippingModule(toBeUsed);
+          break;
+        }
+      }
+    }
+
+  }
 
 /*	public StatelessKnowledgeSession getShippingMethodDecision() {
 		return shippingMethodDecision;
@@ -167,16 +169,10 @@ public class ShippingDecisionPreProcessorImpl implements ShippingQuotePrePostPro
 		this.kbase = kbase;
 	}*/
 
-	@Override
-	public String getModuleCode() {
-		return MODULE_CODE;
-	}
-	
-
-
-
-
-
+  @Override
+  public String getModuleCode() {
+    return MODULE_CODE;
+  }
 
 
 }

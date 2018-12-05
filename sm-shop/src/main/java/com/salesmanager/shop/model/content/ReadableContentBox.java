@@ -2,28 +2,28 @@ package com.salesmanager.shop.model.content;
 
 public class ReadableContentBox extends ContentPage {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	private String boxContent;
-	private String image;
+  /**
+   *
+   */
+  private static final long serialVersionUID = 1L;
 
-	public String getBoxContent() {
-		return boxContent;
-	}
+  private String boxContent;
+  private String image;
 
-	public void setBoxContent(String boxContent) {
-		this.boxContent = boxContent;
-	}
+  public String getBoxContent() {
+    return boxContent;
+  }
 
-	public String getImage() {
-		return image;
-	}
+  public void setBoxContent(String boxContent) {
+    this.boxContent = boxContent;
+  }
 
-	public void setImage(String image) {
-		this.image = image;
-	}
+  public String getImage() {
+    return image;
+  }
+
+  public void setImage(String image) {
+    this.image = image;
+  }
 
 }

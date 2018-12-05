@@ -14,7 +14,6 @@ public class VendorCacheManager {
   private String repositoryFileName = "cms/infinispan_configuration.xml";
 
 
-
   private VendorCacheManager() {
 
     try {

@@ -30,14 +30,13 @@ import com.salesmanager.core.model.content.OutputContentFile;
 
 /**
  * Static content management with S3
- * 
- * @author carlsamson
  *
+ * @author carlsamson
  */
 public class S3StaticContentAssetsManagerImpl implements ContentAssetsManager {
 
   /**
-   * 
+   *
    */
   private static final long serialVersionUID = 1L;
 
@@ -72,7 +71,6 @@ public class S3StaticContentAssetsManagerImpl implements ContentAssetsManager {
       // get buckets
       String bucketName = bucketName();
 
-
       final AmazonS3 s3 = s3Client();
 
       S3Object o =
@@ -82,8 +80,6 @@ public class S3StaticContentAssetsManagerImpl implements ContentAssetsManager {
       baos.write(byteArray, 0, byteArray.length);
       OutputContentFile ct = new OutputContentFile();
       ct.setFile(baos);
-
-
 
       LOGGER.info("Content getFile");
       return ct;
@@ -122,7 +118,6 @@ public class S3StaticContentAssetsManagerImpl implements ContentAssetsManager {
         }
       }
 
-
       LOGGER.info("Content get file names");
       return fileNames;
     } catch (final Exception e) {
@@ -138,8 +133,6 @@ public class S3StaticContentAssetsManagerImpl implements ContentAssetsManager {
     try {
       // get buckets
       String bucketName = bucketName();
-
-
 
       ListObjectsV2Request listObjectsRequest = new ListObjectsV2Request()
           .withBucketName(bucketName).withPrefix(nodePath(merchantStoreCode, fileContentType));
@@ -164,7 +157,6 @@ public class S3StaticContentAssetsManagerImpl implements ContentAssetsManager {
         }
       }
 
-
       LOGGER.info("Content getFiles");
       return files;
     } catch (final Exception e) {
@@ -186,7 +178,6 @@ public class S3StaticContentAssetsManagerImpl implements ContentAssetsManager {
 
       final AmazonS3 s3 = s3Client();
 
-
       ObjectMetadata metadata = new ObjectMetadata();
       metadata.setContentType(inputStaticContentData.getMimeType());
       PutObjectRequest request =
@@ -196,14 +187,12 @@ public class S3StaticContentAssetsManagerImpl implements ContentAssetsManager {
 
       s3.putObject(request);
 
-
       LOGGER.info("Content add file");
     } catch (final Exception e) {
       LOGGER.error("Error while adding file", e);
       throw new ServiceException(e);
 
     }
-
 
 
   }
@@ -225,7 +214,6 @@ public class S3StaticContentAssetsManagerImpl implements ContentAssetsManager {
   @Override
   public void removeFile(String merchantStoreCode, FileContentType staticContentType,
       String fileName) throws ServiceException {
-
 
     try {
       // get buckets
@@ -299,14 +287,12 @@ public class S3StaticContentAssetsManagerImpl implements ContentAssetsManager {
 
   /**
    * Builds an amazon S3 client
-   * 
-   * @return
    */
   private AmazonS3 s3Client() {
 
     AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(regionName()) // The first region to
-                                                                            // try your request
-                                                                            // against
+        // try your request
+        // against
         .build();
 
     return s3;

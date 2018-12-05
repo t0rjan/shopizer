@@ -26,7 +26,6 @@ public abstract class CacheManagerImpl implements CacheManager {
   @SuppressWarnings("unchecked")
   protected void init(String namedCache, String locationFolder) {
 
-
     try {
 
       this.location = locationFolder;
@@ -38,7 +37,6 @@ public abstract class CacheManagerImpl implements CacheManager {
         LOGGER.error("CacheManager is null");
         return;
       }
-
 
       // final EmbeddedCacheManager manager = new DefaultCacheManager();
       final PersistenceConfigurationBuilder persistConfig =
@@ -56,7 +54,6 @@ public abstract class CacheManagerImpl implements CacheManager {
 
       final Cache<String, String> cache = manager.getManager().getCache(namedCache);
 
-
       TreeCacheFactory f = new TreeCacheFactory();
       treeCache = f.createTreeCache(cache);
 
@@ -65,13 +62,11 @@ public abstract class CacheManagerImpl implements CacheManager {
       LOGGER.debug("CMS started");
 
 
-
     } catch (Exception e) {
       LOGGER.error("Error while instantiating CmsImageFileManager", e);
     } finally {
 
     }
-
 
 
   }
@@ -84,7 +79,6 @@ public abstract class CacheManagerImpl implements CacheManager {
   public TreeCache getTreeCache() {
     return treeCache;
   }
-
 
 
 }

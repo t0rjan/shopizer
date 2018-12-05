@@ -18,60 +18,60 @@ import com.salesmanager.shop.utils.DateUtil;
 
 /**
  * Converts user model to readable user
- * @author carlsamson
  *
+ * @author carlsamson
  */
 public class ReadableUserPopulator extends AbstractDataPopulator<User, ReadableUser> {
 
-	@Override
-	public ReadableUser populate(User source, ReadableUser target, MerchantStore store, Language language)
-			throws ConversionException {
-		Validate.notNull(source, "User cannot be null");
-		
-		if(target == null) {
-			target = new ReadableUser();
-		}
-		
-		target.setFirstName(source.getFirstName());
-		target.setLastName(source.getLastName());
-		target.setEmailAddress(source.getAdminEmail());
-		target.setUserName(source.getAdminName());
-		
-		if(source.getLastAccess()!=null) {
-			target.setLastAccess(DateUtil.formatLongDate(source.getLastAccess()));
-		}
-		
-		//set default language
-		target.setDefaultLanguage(Constants.DEFAULT_LANGUAGE);
-		
-		if(source.getDefaultLanguage()!= null)
-			target.setDefaultLanguage(source.getDefaultLanguage().getCode());
-		target.setMerchant(source.getMerchantStore().getCode());
-		target.setId(source.getId());
-		
-		
-		for(Group group:source.getGroups()) {
-			
-			ReadableGroup g = new ReadableGroup();
-			g.setId(new Long(group.getId()));
-			g.setName(group.getGroupName());
-			target.getGroups().add(g);
-		}
-		
-		/**
-		 * dates
-		 * DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm a z");
-		 * myObjectMapper.setDateFormat(df);
-		 */
-		
-		
-		return target;
-	}
+  @Override
+  public ReadableUser populate(User source, ReadableUser target, MerchantStore store,
+      Language language)
+      throws ConversionException {
+    Validate.notNull(source, "User cannot be null");
 
-	@Override
-	protected ReadableUser createTarget() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    if (target == null) {
+      target = new ReadableUser();
+    }
+
+    target.setFirstName(source.getFirstName());
+    target.setLastName(source.getLastName());
+    target.setEmailAddress(source.getAdminEmail());
+    target.setUserName(source.getAdminName());
+
+    if (source.getLastAccess() != null) {
+      target.setLastAccess(DateUtil.formatLongDate(source.getLastAccess()));
+    }
+
+    //set default language
+    target.setDefaultLanguage(Constants.DEFAULT_LANGUAGE);
+
+    if (source.getDefaultLanguage() != null) {
+      target.setDefaultLanguage(source.getDefaultLanguage().getCode());
+    }
+    target.setMerchant(source.getMerchantStore().getCode());
+    target.setId(source.getId());
+
+    for (Group group : source.getGroups()) {
+
+      ReadableGroup g = new ReadableGroup();
+      g.setId(new Long(group.getId()));
+      g.setName(group.getGroupName());
+      target.getGroups().add(g);
+    }
+
+    /**
+     * dates
+     * DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm a z");
+     * myObjectMapper.setDateFormat(df);
+     */
+
+    return target;
+  }
+
+  @Override
+  protected ReadableUser createTarget() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
 }

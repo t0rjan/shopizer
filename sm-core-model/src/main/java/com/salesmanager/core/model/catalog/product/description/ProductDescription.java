@@ -12,95 +12,96 @@ import com.salesmanager.core.model.catalog.product.Product;
 import com.salesmanager.core.model.common.description.Description;
 
 @Entity
-@Table(name = "PRODUCT_DESCRIPTION", schema=SchemaConstant.SALESMANAGER_SCHEMA, uniqueConstraints={
-	@UniqueConstraint(columnNames={
-			"PRODUCT_ID",
-			"LANGUAGE_ID"
-		})
-	}
+@Table(name = "PRODUCT_DESCRIPTION", schema = SchemaConstant.SALESMANAGER_SCHEMA, uniqueConstraints = {
+    @UniqueConstraint(columnNames = {
+        "PRODUCT_ID",
+        "LANGUAGE_ID"
+    })
+}
 )
 public class ProductDescription extends Description {
-	private static final long serialVersionUID = -7991123535661321865L;
-	
-	@ManyToOne(targetEntity = Product.class)
-	@JoinColumn(name = "PRODUCT_ID", nullable = false)
-	private Product product;
-	
-	@Column(name = "PRODUCT_HIGHLIGHT")
-	private String productHighlight;
 
-	@Column(name = "DOWNLOAD_LNK")
-	private String productExternalDl;
+  private static final long serialVersionUID = -7991123535661321865L;
 
-	@Column(name = "SEF_URL")
-	private String seUrl;
+  @ManyToOne(targetEntity = Product.class)
+  @JoinColumn(name = "PRODUCT_ID", nullable = false)
+  private Product product;
 
-	@Column(name = "META_TITLE")
-	private String metatagTitle;
+  @Column(name = "PRODUCT_HIGHLIGHT")
+  private String productHighlight;
 
-	@Column(name = "META_KEYWORDS")
-	private String metatagKeywords;
+  @Column(name = "DOWNLOAD_LNK")
+  private String productExternalDl;
 
-	@Column(name = "META_DESCRIPTION")
-	private String metatagDescription;
+  @Column(name = "SEF_URL")
+  private String seUrl;
 
-	public ProductDescription() {
-	}
+  @Column(name = "META_TITLE")
+  private String metatagTitle;
 
-	public String getProductHighlight() {
-		return productHighlight;
-	}
+  @Column(name = "META_KEYWORDS")
+  private String metatagKeywords;
 
-	public void setProductHighlight(String productHighlight) {
-		this.productHighlight = productHighlight;
-	}
+  @Column(name = "META_DESCRIPTION")
+  private String metatagDescription;
 
-	public String getProductExternalDl() {
-		return productExternalDl;
-	}
+  public ProductDescription() {
+  }
 
-	public void setProductExternalDl(String productExternalDl) {
-		this.productExternalDl = productExternalDl;
-	}
+  public String getProductHighlight() {
+    return productHighlight;
+  }
 
-	public String getSeUrl() {
-		return seUrl;
-	}
+  public void setProductHighlight(String productHighlight) {
+    this.productHighlight = productHighlight;
+  }
 
-	public void setSeUrl(String seUrl) {
-		this.seUrl = seUrl;
-	}
+  public String getProductExternalDl() {
+    return productExternalDl;
+  }
 
-	public String getMetatagTitle() {
-		return metatagTitle;
-	}
+  public void setProductExternalDl(String productExternalDl) {
+    this.productExternalDl = productExternalDl;
+  }
 
-	public void setMetatagTitle(String metatagTitle) {
-		this.metatagTitle = metatagTitle;
-	}
+  public String getSeUrl() {
+    return seUrl;
+  }
 
-	public String getMetatagKeywords() {
-		return metatagKeywords;
-	}
+  public void setSeUrl(String seUrl) {
+    this.seUrl = seUrl;
+  }
 
-	public void setMetatagKeywords(String metatagKeywords) {
-		this.metatagKeywords = metatagKeywords;
-	}
+  public String getMetatagTitle() {
+    return metatagTitle;
+  }
 
-	public String getMetatagDescription() {
-		return metatagDescription;
-	}
+  public void setMetatagTitle(String metatagTitle) {
+    this.metatagTitle = metatagTitle;
+  }
 
-	public void setMetatagDescription(String metatagDescription) {
-		this.metatagDescription = metatagDescription;
-	}
+  public String getMetatagKeywords() {
+    return metatagKeywords;
+  }
 
-	public Product getProduct() {
-		return product;
-	}
+  public void setMetatagKeywords(String metatagKeywords) {
+    this.metatagKeywords = metatagKeywords;
+  }
 
-	public void setProduct(Product product) {
-		this.product = product;
-	}
+  public String getMetatagDescription() {
+    return metatagDescription;
+  }
+
+  public void setMetatagDescription(String metatagDescription) {
+    this.metatagDescription = metatagDescription;
+  }
+
+  public Product getProduct() {
+    return product;
+  }
+
+  public void setProduct(Product product) {
+    this.product = product;
+  }
 
 }

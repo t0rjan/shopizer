@@ -44,216 +44,202 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * API to create, read, updat and delete a Product
- * API to create Manufacturer
- * @author Carl Samson
+ * API to create, read, updat and delete a Product API to create Manufacturer
  *
+ * @author Carl Samson
  */
 @Controller
 @RequestMapping("/services")
 public class ProductItemsRESTController {
-	
-	@Inject
-	private MerchantStoreService merchantStoreService;
-	
-	@Inject
-	private CategoryService categoryService;
-	
-	@Inject
-	private CustomerService customerService;
-	
-	@Inject
-	private ProductService productService;
-	
-	@Inject
-	private ProductFacade productFacade;
-	
-	@Inject
-	private ProductItemsFacade productItemsFacade;
-	
-	@Inject
-	private ProductReviewService productReviewService;
-	
-	@Inject
-	private PricingService pricingService;
 
-	@Inject
-	private ProductOptionService productOptionService;
-	
-	@Inject
-	private ProductOptionValueService productOptionValueService;
-	
-	@Inject
-	private TaxClassService taxClassService;
-	
-	@Inject
-	private ManufacturerService manufacturerService;
-	
-	@Inject
-	private LanguageService languageService;
-	
-	@Inject
-	@Qualifier("img")
-	private ImageFilePath imageUtils;
-	
-	@Inject
-	private LanguageUtils languageUtils;
-	
-	@Inject
-	private ProductRelationshipService productRelationshipService;
-	
+  @Inject
+  private MerchantStoreService merchantStoreService;
 
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ProductItemsRESTController.class);
-	
-	
-	
+  @Inject
+  private CategoryService categoryService;
 
-	/**
-	 * Items for manufacturer
-	 * filter=BRAND&filter-value=123
-	 * @param start
-	 * @param max
-	 * @param store
-	 * @param language
-	 * @param category
-	 * @param filterType
-	 * @param filterValue
-	 * @param model
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	//@RequestMapping("/products/public/page/{start}/{max}/{store}/{language}/{category}.html/filter={filterType}/filter-value={filterValue}")
-	/** fixed filter **/
-	@RequestMapping("/public/products/page/{start}/{max}/{store}/{language}/manufacturer/{id}")
-	@ResponseBody
-	public ReadableProductList getProductItemsByManufacturer(@PathVariable int start, @PathVariable int max, @PathVariable String store, @PathVariable final String language, @PathVariable final Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-		try {
-		
-			/**
-			 * How to Spring MVC Rest web service - ajax / jquery
-			 * http://codetutr.com/2013/04/09/spring-mvc-easy-rest-based-json-services-with-responsebody/
-			 */
-			
-			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-			
-			
-			Map<String,Language> langs = languageService.getLanguagesMap();
-			
-			if(merchantStore!=null) {
-				if(!merchantStore.getCode().equals(store)) {
-					merchantStore = null; //reset for the current request
-				}
-			}
-			
-			if(merchantStore== null) {
-				merchantStore = merchantStoreService.getByCode(store);
-			}
-			
-			if(merchantStore==null) {
-				LOGGER.error("Merchant store is null for code " + store);
-				response.sendError(503, "Merchant store is null for code " + store);//TODO localized message
-				return null;
-			}
-			
-	
-	
-			Language lang = langs.get(language);
-			if(lang==null) {
-				lang = langs.get(Constants.DEFAULT_LANGUAGE);
-			}
-			
+  @Inject
+  private CustomerService customerService;
 
-			
-			ReadableProductList list = productItemsFacade.listItemsByManufacturer(merchantStore, lang, id, start, max);
-			
-			
-			return list;
-		
-		} catch (Exception e) {
-			LOGGER.error("Error while getting products",e);
-			response.sendError(503, "An error occured while retrieving products " + e.getMessage());
-		}
-		
-		return null;
-		
-	}
-	
-	/**
-	 * Query for a product group
-	 * public/products/{store code}/products/group/{id}?lang=fr|en
-	 * no lang it will take session lang or default store lang
-	 * @param store
-	 * @param language
-	 * @param groupCode
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/public/{store}/products/group/{code}")
-	@ResponseBody
-	public ReadableProductList getProductItemsByGroup(@PathVariable String store, @PathVariable final String code, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-		try {
+  @Inject
+  private ProductService productService;
 
-			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+  @Inject
+  private ProductFacade productFacade;
 
-			
-			if(merchantStore!=null) {
-				if(!merchantStore.getCode().equals(store)) {
-					merchantStore = null; //reset for the current request
-				}
-			}
-			
-			if(merchantStore== null) {
-				merchantStore = merchantStoreService.getByCode(store);
-			}
-			
-			if(merchantStore==null) {
-				LOGGER.error("Merchant store is null for code " + store);
-				response.sendError(503, "Merchant store is null for code " + store);//TODO localized message
-				return null;
-			}
-			
-	
-	
-			Language lang = languageUtils.getRESTLanguage(request, merchantStore);
-			
-			//get product group
-			List<ProductRelationship> group = productRelationshipService.getByGroup(merchantStore, code, lang);
+  @Inject
+  private ProductItemsFacade productItemsFacade;
 
-			if(group!=null) {
-				
-				Date today = new Date();
-				List<Long> ids = new ArrayList<Long>();
-				for(ProductRelationship relationship : group) {
-					Product product = relationship.getRelatedProduct();
-					if(product.isAvailable() && DateUtil.dateBeforeEqualsDate(product.getDateAvailable(), today)) {
-						ids.add(product.getId());
-					}
-				}
-				
-				ReadableProductList list = productItemsFacade.listItemsByIds(merchantStore, lang, ids, 0, 0);
-				return list;
-			}
-			
-			
-		
-		} catch (Exception e) {
-			LOGGER.error("Error while getting products",e);
-			response.sendError(503, "An error occured while retrieving products " + e.getMessage());
-		}
-		
-		return null;
-		
-	}
+  @Inject
+  private ProductReviewService productReviewService;
 
-	
+  @Inject
+  private PricingService pricingService;
 
+  @Inject
+  private ProductOptionService productOptionService;
+
+  @Inject
+  private ProductOptionValueService productOptionValueService;
+
+  @Inject
+  private TaxClassService taxClassService;
+
+  @Inject
+  private ManufacturerService manufacturerService;
+
+  @Inject
+  private LanguageService languageService;
+
+  @Inject
+  @Qualifier("img")
+  private ImageFilePath imageUtils;
+
+  @Inject
+  private LanguageUtils languageUtils;
+
+  @Inject
+  private ProductRelationshipService productRelationshipService;
+
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProductItemsRESTController.class);
+
+  /**
+   * Items for manufacturer
+   * filter=BRAND&filter-value=123
+   * @param start
+   * @param max
+   * @param store
+   * @param language
+   * @param category
+   * @param filterType
+   * @param filterValue
+   * @param model
+   * @param request
+   * @param response
+   * @return
+   * @throws Exception
+   */
+  //@RequestMapping("/products/public/page/{start}/{max}/{store}/{language}/{category}.html/filter={filterType}/filter-value={filterValue}")
+
+  /**
+   * fixed filter
+   **/
+  @RequestMapping("/public/products/page/{start}/{max}/{store}/{language}/manufacturer/{id}")
+  @ResponseBody
+  public ReadableProductList getProductItemsByManufacturer(@PathVariable int start,
+      @PathVariable int max, @PathVariable String store, @PathVariable final String language,
+      @PathVariable final Long id, Model model, HttpServletRequest request,
+      HttpServletResponse response) throws Exception {
+
+    try {
+
+      /**
+       * How to Spring MVC Rest web service - ajax / jquery
+       * http://codetutr.com/2013/04/09/spring-mvc-easy-rest-based-json-services-with-responsebody/
+       */
+
+      MerchantStore merchantStore = (MerchantStore) request.getAttribute(Constants.MERCHANT_STORE);
+
+      Map<String, Language> langs = languageService.getLanguagesMap();
+
+      if (merchantStore != null) {
+        if (!merchantStore.getCode().equals(store)) {
+          merchantStore = null; //reset for the current request
+        }
+      }
+
+      if (merchantStore == null) {
+        merchantStore = merchantStoreService.getByCode(store);
+      }
+
+      if (merchantStore == null) {
+        LOGGER.error("Merchant store is null for code " + store);
+        response.sendError(503, "Merchant store is null for code " + store);//TODO localized message
+        return null;
+      }
+
+      Language lang = langs.get(language);
+      if (lang == null) {
+        lang = langs.get(Constants.DEFAULT_LANGUAGE);
+      }
+
+      ReadableProductList list = productItemsFacade
+          .listItemsByManufacturer(merchantStore, lang, id, start, max);
+
+      return list;
+
+    } catch (Exception e) {
+      LOGGER.error("Error while getting products", e);
+      response.sendError(503, "An error occured while retrieving products " + e.getMessage());
+    }
+
+    return null;
+
+  }
+
+  /**
+   * Query for a product group public/products/{store code}/products/group/{id}?lang=fr|en no lang
+   * it will take session lang or default store lang
+   */
+  @RequestMapping("/public/{store}/products/group/{code}")
+  @ResponseBody
+  public ReadableProductList getProductItemsByGroup(@PathVariable String store,
+      @PathVariable final String code, HttpServletRequest request, HttpServletResponse response)
+      throws Exception {
+
+    try {
+
+      MerchantStore merchantStore = (MerchantStore) request.getAttribute(Constants.MERCHANT_STORE);
+
+      if (merchantStore != null) {
+        if (!merchantStore.getCode().equals(store)) {
+          merchantStore = null; //reset for the current request
+        }
+      }
+
+      if (merchantStore == null) {
+        merchantStore = merchantStoreService.getByCode(store);
+      }
+
+      if (merchantStore == null) {
+        LOGGER.error("Merchant store is null for code " + store);
+        response.sendError(503, "Merchant store is null for code " + store);//TODO localized message
+        return null;
+      }
+
+      Language lang = languageUtils.getRESTLanguage(request, merchantStore);
+
+      //get product group
+      List<ProductRelationship> group = productRelationshipService
+          .getByGroup(merchantStore, code, lang);
+
+      if (group != null) {
+
+        Date today = new Date();
+        List<Long> ids = new ArrayList<Long>();
+        for (ProductRelationship relationship : group) {
+          Product product = relationship.getRelatedProduct();
+          if (product.isAvailable() && DateUtil
+              .dateBeforeEqualsDate(product.getDateAvailable(), today)) {
+            ids.add(product.getId());
+          }
+        }
+
+        ReadableProductList list = productItemsFacade
+            .listItemsByIds(merchantStore, lang, ids, 0, 0);
+        return list;
+      }
+
+
+    } catch (Exception e) {
+      LOGGER.error("Error while getting products", e);
+      response.sendError(503, "An error occured while retrieving products " + e.getMessage());
+    }
+
+    return null;
+
+  }
 
 
 }

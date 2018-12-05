@@ -31,78 +31,71 @@ import io.swagger.annotations.ApiOperation;
 
 /**
  * Optin a customer to events such s newsletter
- * @author carlsamson
  *
+ * @author carlsamson
  */
 @Controller
 @RequestMapping("/api/v1")
 public class OptinApi {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(OptinApi.class);
-	
 
-	
-	@Inject
-	private OptinService optinService;
-	
-
-	@Inject
-	private StoreFacade storeFacade;
-	
-	@Inject
-	private LanguageUtils languageUtils;
-	
-	
-	/**
-	 * Create new optin
-	 */
-	@RequestMapping( value={"/optin"}, method=RequestMethod.POST)
-	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(httpMethod = "POST", value = "Creates an optin event type definition", notes = "", produces = "application/json")
-	@ResponseBody
-	public ResponseEntity<ReadableOptin> create(@Valid @RequestBody PersistableOptin optin, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-		
-		MerchantStore merchantStore = storeFacade.getByCode(request);
-		Language language = languageUtils.getRESTLanguage(request, merchantStore);
-		
-		
-		try {
-			
-			Optin optinEntity = new Optin();
-			
-			optinEntity.setCode(optin.getCode());
-			optinEntity.setDescription(optin.getDescription());
-			optinEntity.setOptinType(OptinType.valueOf(optin.getOptinType()));
-			optinEntity.setMerchant(merchantStore);
-			
-			
-			optinService.create(optinEntity);
-			
-			ReadableOptin readable = new ReadableOptin();
-			readable.setCode(optin.getCode());
-			readable.setDescription(optin.getDescription());
-			readable.setOptinType(optin.getOptinType());
-			
-			return new ResponseEntity<ReadableOptin>(HttpStatus.OK);
+  private static final Logger LOGGER = LoggerFactory.getLogger(OptinApi.class);
 
 
-			
-		} catch (Exception e) {
-			LOGGER.error("Error while creating optin",e);
-			try {
-				response.sendError(503, "Error while creating optin " + e.getMessage());
-			} catch (Exception ignore) {
-			}
-			
-			return null;
-		}
-
-		
-	}
+  @Inject
+  private OptinService optinService;
 
 
+  @Inject
+  private StoreFacade storeFacade;
 
+  @Inject
+  private LanguageUtils languageUtils;
+
+
+  /**
+   * Create new optin
+   */
+  @RequestMapping(value = {"/optin"}, method = RequestMethod.POST)
+  @ResponseStatus(HttpStatus.OK)
+  @ApiOperation(httpMethod = "POST", value = "Creates an optin event type definition", notes = "", produces = "application/json")
+  @ResponseBody
+  public ResponseEntity<ReadableOptin> create(@Valid @RequestBody PersistableOptin optin,
+      HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+    MerchantStore merchantStore = storeFacade.getByCode(request);
+    Language language = languageUtils.getRESTLanguage(request, merchantStore);
+
+    try {
+
+      Optin optinEntity = new Optin();
+
+      optinEntity.setCode(optin.getCode());
+      optinEntity.setDescription(optin.getDescription());
+      optinEntity.setOptinType(OptinType.valueOf(optin.getOptinType()));
+      optinEntity.setMerchant(merchantStore);
+
+      optinService.create(optinEntity);
+
+      ReadableOptin readable = new ReadableOptin();
+      readable.setCode(optin.getCode());
+      readable.setDescription(optin.getDescription());
+      readable.setOptinType(optin.getOptinType());
+
+      return new ResponseEntity<ReadableOptin>(HttpStatus.OK);
+
+
+    } catch (Exception e) {
+      LOGGER.error("Error while creating optin", e);
+      try {
+        response.sendError(503, "Error while creating optin " + e.getMessage());
+      } catch (Exception ignore) {
+      }
+
+      return null;
+    }
+
+
+  }
 
 
 }

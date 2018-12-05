@@ -11,24 +11,23 @@ import com.salesmanager.core.model.catalog.product.type.ProductType;
 
 @Service("productTypeService")
 public class ProductTypeServiceImpl extends SalesManagerEntityServiceImpl<Long, ProductType>
-		implements ProductTypeService {
+    implements ProductTypeService {
 
-	private ProductTypeRepository productTypeRepository;
-	
-	@Inject
-	public ProductTypeServiceImpl(
-			ProductTypeRepository productTypeRepository) {
-			super(productTypeRepository);
-			this.productTypeRepository = productTypeRepository;
-	}
-	
-	@Override
-	public ProductType getProductType(String productTypeCode) throws ServiceException {
-		
-		return productTypeRepository.findByCode(productTypeCode);
-		
-	}
+  private ProductTypeRepository productTypeRepository;
 
+  @Inject
+  public ProductTypeServiceImpl(
+      ProductTypeRepository productTypeRepository) {
+    super(productTypeRepository);
+    this.productTypeRepository = productTypeRepository;
+  }
+
+  @Override
+  public ProductType getProductType(String productTypeCode) throws ServiceException {
+
+    return productTypeRepository.findByCode(productTypeCode);
+
+  }
 
 
 }

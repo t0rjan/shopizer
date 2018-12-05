@@ -25,60 +25,63 @@ import io.swagger.annotations.ApiOperation;
 @Controller
 @RequestMapping("/api/v1")
 public class MarketPlaceApi {
-	
-	@Inject
-	private MarketPlaceFacade marketPlaceFacade;
-	
-	@Inject
-	private StoreFacade storeFacade;
-	
-	@Inject
-	private LanguageUtils languageUtils;
-	
-	
-	void create() throws Exception {
-		
-	}
-	
-	/**
-	 * Get a marketplace from storeCode
-	 * returns market place details and merchant store
-	 */
-    @ResponseStatus(HttpStatus.OK)
-	@RequestMapping( value={"/marketplace/{store}"}, method=RequestMethod.GET)
-	@ApiOperation(httpMethod = "GET", value = "Get market place meta-data", notes = "", produces = "application/json", response = ReadableMarketPlace.class)
-    public @ResponseBody ReadableMarketPlace marketPlace(@PathVariable String store, @RequestParam(value = "lang", required=false) String lang, HttpServletRequest request, HttpServletResponse response) throws Exception {
-    	
-    	Language l = languageUtils.getServiceLanguage(lang);
-    	
-    	ReadableMarketPlace marketPlace = marketPlaceFacade.get(store, l);
-    	
-		if(marketPlace==null) {
-			response.sendError(404,  "Marketplace not found for merchant store [" + store + "]");
-			return null;
-		}
-    	
-    	return marketPlace;
+
+  @Inject
+  private MarketPlaceFacade marketPlaceFacade;
+
+  @Inject
+  private StoreFacade storeFacade;
+
+  @Inject
+  private LanguageUtils languageUtils;
+
+
+  void create() throws Exception {
+
+  }
+
+  /**
+   * Get a marketplace from storeCode returns market place details and merchant store
+   */
+  @ResponseStatus(HttpStatus.OK)
+  @RequestMapping(value = {"/marketplace/{store}"}, method = RequestMethod.GET)
+  @ApiOperation(httpMethod = "GET", value = "Get market place meta-data", notes = "", produces = "application/json", response = ReadableMarketPlace.class)
+  public @ResponseBody
+  ReadableMarketPlace marketPlace(@PathVariable String store,
+      @RequestParam(value = "lang", required = false) String lang, HttpServletRequest request,
+      HttpServletResponse response) throws Exception {
+
+    Language l = languageUtils.getServiceLanguage(lang);
+
+    ReadableMarketPlace marketPlace = marketPlaceFacade.get(store, l);
+
+    if (marketPlace == null) {
+      response.sendError(404, "Marketplace not found for merchant store [" + store + "]");
+      return null;
     }
-    
-    @ResponseStatus(HttpStatus.OK)
-	@RequestMapping( value={"/store/{store}"}, method=RequestMethod.GET)
-    @ApiOperation(httpMethod = "GET", value = "Get merchant store", notes = "", produces = "application/json", response = ReadableMerchantStore.class)
-    public @ResponseBody ReadableMerchantStore store(@PathVariable String store, @RequestParam(value = "lang", required=false) String lang, HttpServletRequest request, HttpServletResponse response) throws Exception {
-    	
-    	Language l = languageUtils.getServiceLanguage(lang);
-    	
-    	
-    	
-    	ReadableMerchantStore readableStore = storeFacade.getByCode(store, l);
-    	
-		if(readableStore==null) {
-			response.sendError(404,  "MerchanStore not found for merchant store [" + store + "]");
-			return null;
-		}
-    	
-    	return readableStore;
+
+    return marketPlace;
+  }
+
+  @ResponseStatus(HttpStatus.OK)
+  @RequestMapping(value = {"/store/{store}"}, method = RequestMethod.GET)
+  @ApiOperation(httpMethod = "GET", value = "Get merchant store", notes = "", produces = "application/json", response = ReadableMerchantStore.class)
+  public @ResponseBody
+  ReadableMerchantStore store(@PathVariable String store,
+      @RequestParam(value = "lang", required = false) String lang, HttpServletRequest request,
+      HttpServletResponse response) throws Exception {
+
+    Language l = languageUtils.getServiceLanguage(lang);
+
+    ReadableMerchantStore readableStore = storeFacade.getByCode(store, l);
+
+    if (readableStore == null) {
+      response.sendError(404, "MerchanStore not found for merchant store [" + store + "]");
+      return null;
     }
-		
+
+    return readableStore;
+  }
+
 
 }

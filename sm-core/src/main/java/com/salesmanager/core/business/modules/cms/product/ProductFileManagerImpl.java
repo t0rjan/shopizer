@@ -65,7 +65,6 @@ public class ProductFileManagerImpl extends ProductFileManager {
   public void addProductImage(ProductImage productImage, ImageContentFile contentImage)
       throws ServiceException {
 
-
     try {
 
       /** copy to input stream **/
@@ -87,7 +86,6 @@ public class ProductFileManagerImpl extends ProductFileManager {
 
       BufferedImage bufferedImage = ImageIO.read(is2);
 
-
       if (bufferedImage == null) {
         LOGGER.error("Cannot read image format for " + productImage.getProductImage());
         throw new Exception("Cannot read image format " + productImage.getProductImage());
@@ -95,7 +93,6 @@ public class ProductFileManagerImpl extends ProductFileManager {
 
       // contentImage.setBufferedImage(bufferedImage);
       contentImage.setFile(is1);
-
 
       // upload original -- L
       contentImage.setFileContentType(FileContentType.PRODUCTLG);
@@ -108,8 +105,8 @@ public class ProductFileManagerImpl extends ProductFileManager {
        * largeContentImage.setDefaultImage(productImage.isDefaultImage());
        * largeContentImage.setImageName(new
        * StringBuilder().append("L-").append(productImage.getProductImage()).toString());
-       * 
-       * 
+       *
+       *
        * uploadImage.uploadProductImage(configuration, productImage, largeContentImage);
        */
 
@@ -120,10 +117,9 @@ public class ProductFileManagerImpl extends ProductFileManager {
        * smallContentImage.setDefaultImage(productImage.isDefaultImage());
        * smallContentImage.setImageName(new
        * StringBuilder().append("S-").append(productImage.getProductImage()).toString());
-       * 
+       *
        * uploadImage.uploadProductImage(configuration, productImage, smallContentImage);
        */
-
 
       // get template properties file
 
@@ -135,11 +131,10 @@ public class ProductFileManagerImpl extends ProductFileManager {
 
       //Resizes
       if (!StringUtils.isBlank(slargeImageHeight) && !StringUtils.isBlank(slargeImageWidth)) { // &&
-                                                                                               // !StringUtils.isBlank(ssmallImageHeight)
-                                                                                               // &&
-                                                                                               // !StringUtils.isBlank(ssmallImageWidth))
-                                                                                               // {
-
+        // !StringUtils.isBlank(ssmallImageHeight)
+        // &&
+        // !StringUtils.isBlank(ssmallImageWidth))
+        // {
 
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
 
@@ -152,7 +147,6 @@ public class ProductFileManagerImpl extends ProductFileManager {
         if (extension == null) {
           extension = "jpeg";
         }
-
 
         int largeImageHeight = Integer.parseInt(slargeImageHeight);
         int largeImageWidth = Integer.parseInt(slargeImageWidth);
@@ -182,7 +176,6 @@ public class ProductFileManagerImpl extends ProductFileManager {
         BufferedImage largeResizedImage =
             ProductImageSizeUtils.resizeWithRatio(bufferedImage, largeImageWidth, largeImageHeight);
 
-
         File tempLarge =
             File.createTempFile(new StringBuilder().append(productImage.getProduct().getId())
                 .append("tmpLarge").toString(), "." + extension);
@@ -190,15 +183,12 @@ public class ProductFileManagerImpl extends ProductFileManager {
 
         FileInputStream isLarge = new FileInputStream(tempLarge);
 
-
         // IOUtils.copy(isLarge, output);
-
 
         ImageContentFile largeContentImage = new ImageContentFile();
         largeContentImage.setFileContentType(FileContentType.PRODUCT);
         largeContentImage.setFileName(productImage.getProductImage());
         largeContentImage.setFile(isLarge);
-
 
         // largeContentImage.setBufferedImage(bufferedImage);
 
@@ -206,7 +196,6 @@ public class ProductFileManagerImpl extends ProductFileManager {
         // largeContentImage.setDefaultImage(false);
         // largeContentImage.setImageName(new
         // StringBuilder().append("L-").append(productImage.getProductImage()).toString());
-
 
         uploadImage.addProductImage(productImage, largeContentImage);
 
@@ -224,34 +213,31 @@ public class ProductFileManagerImpl extends ProductFileManager {
          * smallImageWidth, smallImageHeight); File tempSmall = File.createTempFile(new
          * StringBuilder().append(productImage.getProduct().getId()).append("tmpSmall").toString(),
          * "." + extension ); ImageIO.write(smallResizedImage, extension, tempSmall);
-         * 
+         *
          * //byte[] is = IOUtils.toByteArray(new FileInputStream(tempSmall));
-         * 
+         *
          * FileInputStream isSmall = new FileInputStream(tempSmall);
-         * 
+         *
          * output = new ByteArrayOutputStream(); IOUtils.copy(isSmall, output);
-         * 
-         * 
+         *
+         *
          * smallContentImage = new InputContentImage(ImageContentType.PRODUCT);
          * smallContentImage.setFile(output); smallContentImage.setDefaultImage(false);
          * smallContentImage.setImageName(new
          * StringBuilder().append("S-").append(productImage.getProductImage()).toString());
-         * 
+         *
          * uploadImage.uploadProductImage(configuration, productImage, smallContentImage);
-         * 
+         *
          * output.flush(); output.close();
-         * 
+         *
          * tempSmall.delete();
          */
-
-
 
       } else {
         // small will be the same as the original
         contentImage.setFileContentType(FileContentType.PRODUCT);
         uploadImage.addProductImage(productImage, contentImage);
       }
-
 
 
     } catch (Exception e) {
@@ -285,7 +271,6 @@ public class ProductFileManagerImpl extends ProductFileManager {
   }
 
 
-
   @Override
   public void removeProductImage(ProductImage productImage) throws ServiceException {
 
@@ -294,12 +279,12 @@ public class ProductFileManagerImpl extends ProductFileManager {
     /*
      * ProductImage large = new ProductImage(); large.setProduct(productImage.getProduct());
      * large.setProductImage("L" + productImage.getProductImage());
-     * 
+     *
      * this.removeImage.removeProductImage(large);
-     * 
+     *
      * ProductImage small = new ProductImage(); small.setProduct(productImage.getProduct());
      * small.setProductImage("S" + productImage.getProductImage());
-     * 
+     *
      * this.removeImage.removeProductImage(small);
      */
 
@@ -332,7 +317,6 @@ public class ProductFileManagerImpl extends ProductFileManager {
   }
 
 
-
   public ProductImageGet getGetImage() {
     return getImage;
   }
@@ -350,13 +334,11 @@ public class ProductFileManagerImpl extends ProductFileManager {
   }
 
 
-
   @Override
   public OutputContentFile getProductImage(String merchantStoreCode, String productCode,
       String imageName, ProductImageSize size) throws ServiceException {
     return getImage.getProductImage(merchantStoreCode, productCode, imageName, size);
   }
-
 
 
 }

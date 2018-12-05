@@ -22,90 +22,90 @@ import com.salesmanager.shop.store.security.common.CustomAuthenticationManager;
 public class AuthenticationTokenFilter extends OncePerRequestFilter {
 
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationTokenFilter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationTokenFilter.class);
 
-    
-    @Value("${authToken.header}")
-    private String tokenHeader;
-    
-    private final static String BEARER_TOKEN ="Bearer ";
-    
-    private final static String FACEBOOK_TOKEN ="FB ";
 
-    
-    @Inject
-    private CustomAuthenticationManager jwtCustomCustomerAuthenticationManager;
-    
-    @Inject
-    private CustomAuthenticationManager jwtCustomAdminAuthenticationManager;
+  @Value("${authToken.header}")
+  private String tokenHeader;
 
-    @Inject
-    private CustomAuthenticationManager facebookCustomerAuthenticationManager;
-    
+  private final static String BEARER_TOKEN = "Bearer ";
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        
+  private final static String FACEBOOK_TOKEN = "FB ";
 
-    	String origin = "*";
-    	if(!StringUtils.isBlank(request.getHeader("origin"))) {
-    		origin = request.getHeader("origin");
-    	}
-    	response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
-    	response.setHeader("Access-Control-Allow-Origin", origin);
-    	response.setHeader("Access-Control-Allow-Headers", "X-Auth-Token, Content-Type, Authorization");
-    	response.setHeader("Access-Control-Allow-Credentials", "true");
 
-        	
-    	//@TODO edit this
-    	if(request.getRequestURL().toString().contains("/api/v1/auth")) {
-    		//setHeader(request,response);   	
-	    	final String requestHeader = request.getHeader(this.tokenHeader);//token
-	    	
-	    	try {
-		        if (requestHeader != null && requestHeader.startsWith(BEARER_TOKEN)) {//Bearer
-		        	
-		        	jwtCustomCustomerAuthenticationManager.authenticateRequest(request, response);
-	
-		        } else if(requestHeader != null && requestHeader.startsWith(FACEBOOK_TOKEN)) {
-		        	//Facebook
-		        	facebookCustomerAuthenticationManager.authenticateRequest(request, response);
-		        } else {
-		        	LOGGER.warn("couldn't find any authorization token, will ignore the header");
-		        }
-	        
-	    	} catch(Exception e) {
-	    		throw new ServletException(e);
-	    	}
-    	}
-    	
-    	if(request.getRequestURL().toString().contains("/api/v1/private")) {
-    		
-    		//setHeader(request,response);  
-    		
-    		Enumeration<String> headers = request.getHeaderNames();
-    		while(headers.hasMoreElements()) {
-    			LOGGER.debug(headers.nextElement());
-    		}
+  @Inject
+  private CustomAuthenticationManager jwtCustomCustomerAuthenticationManager;
 
-	    	final String requestHeader = request.getHeader(this.tokenHeader);//token
-	    	
-	    	try {
-		        if (requestHeader != null && requestHeader.startsWith(BEARER_TOKEN)) {//Bearer
-		        	
-		        	jwtCustomAdminAuthenticationManager.authenticateRequest(request, response);
-	
-		        } else {
-		        	LOGGER.warn("couldn't find any authorization token, will ignore the header, might be a preflight check");
-		        }
-	        
-	    	} catch(Exception e) {
-	    		throw new ServletException(e);
-	    	}
-    	}
+  @Inject
+  private CustomAuthenticationManager jwtCustomAdminAuthenticationManager;
 
-        chain.doFilter(request, response);
+  @Inject
+  private CustomAuthenticationManager facebookCustomerAuthenticationManager;
+
+
+  @Override
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+      FilterChain chain) throws ServletException, IOException {
+
+    String origin = "*";
+    if (!StringUtils.isBlank(request.getHeader("origin"))) {
+      origin = request.getHeader("origin");
     }
+    response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
+    response.setHeader("Access-Control-Allow-Origin", origin);
+    response.setHeader("Access-Control-Allow-Headers", "X-Auth-Token, Content-Type, Authorization");
+    response.setHeader("Access-Control-Allow-Credentials", "true");
+
+    //@TODO edit this
+    if (request.getRequestURL().toString().contains("/api/v1/auth")) {
+      //setHeader(request,response);
+      final String requestHeader = request.getHeader(this.tokenHeader);//token
+
+      try {
+        if (requestHeader != null && requestHeader.startsWith(BEARER_TOKEN)) {//Bearer
+
+          jwtCustomCustomerAuthenticationManager.authenticateRequest(request, response);
+
+        } else if (requestHeader != null && requestHeader.startsWith(FACEBOOK_TOKEN)) {
+          //Facebook
+          facebookCustomerAuthenticationManager.authenticateRequest(request, response);
+        } else {
+          LOGGER.warn("couldn't find any authorization token, will ignore the header");
+        }
+
+      } catch (Exception e) {
+        throw new ServletException(e);
+      }
+    }
+
+    if (request.getRequestURL().toString().contains("/api/v1/private")) {
+
+      //setHeader(request,response);
+
+      Enumeration<String> headers = request.getHeaderNames();
+      while (headers.hasMoreElements()) {
+        LOGGER.debug(headers.nextElement());
+      }
+
+      final String requestHeader = request.getHeader(this.tokenHeader);//token
+
+      try {
+        if (requestHeader != null && requestHeader.startsWith(BEARER_TOKEN)) {//Bearer
+
+          jwtCustomAdminAuthenticationManager.authenticateRequest(request, response);
+
+        } else {
+          LOGGER.warn(
+              "couldn't find any authorization token, will ignore the header, might be a preflight check");
+        }
+
+      } catch (Exception e) {
+        throw new ServletException(e);
+      }
+    }
+
+    chain.doFilter(request, response);
+  }
     
 /*    private void setHeader(HttpServletRequest request, HttpServletResponse response) {
     	
@@ -119,9 +119,11 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
     	response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
     	response.setHeader("Access-Control-Allow-Origin", origin);
     	
-    	*//**
-    	 * Simplify options
-    	 *//*
+    	*/
+
+  /**
+   * Simplify options
+   *//*
     	
     	if("options".equalsIgnoreCase(request.getMethod())) {
     		try {
@@ -140,12 +142,10 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 	
     	
     }*/
-    
-    private byte[] restOptionsResponseBytes() throws IOException {
-        String serialized = "{\"status\":200}";
-        return serialized.getBytes();
-    }
-
+  private byte[] restOptionsResponseBytes() throws IOException {
+    String serialized = "{\"status\":200}";
+    return serialized.getBytes();
+  }
 
 
 }

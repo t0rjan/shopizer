@@ -45,161 +45,162 @@ import javax.ws.rs.core.MediaType;
 @Api(value = "/api/v1/category")
 @RequestMapping("/api/v1")
 public class CategoryApi {
-	
-	@Inject
-	private CategoryFacade categoryFacade;
-	
-	@Inject
-	private CategoryService categoryService;
-	
-	@Inject
-	@Qualifier("img")
-	private ImageFilePath imageUtils;
-	
-	@Inject
-	private StoreFacade storeFacade;
-	
-	@Inject
-	private LanguageUtils languageUtils;
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(CategoryApi.class);
-	
-	
-	@RequestMapping(value = "/category/{id}", method=RequestMethod.GET)
-    @ApiOperation(httpMethod = "GET", value = "Get category list for an given Category id", notes = "List current Category and child category")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "List of category found", response = ReadableCategory.class) })
-	public @ResponseBody ReadableCategory get(@PathVariable final Long id, @RequestParam(value = "lang", required=false) String lang, HttpServletRequest request, HttpServletResponse response) throws Exception {
-	
-		try {
-			MerchantStore merchantStore = storeFacade.getByCode(request);
-			Language language = languageUtils.getRESTLanguage(request, merchantStore);	
-			
-			ReadableCategory category  = categoryFacade.getById(merchantStore, id, language);
-			
-			if(category==null) {
-				response.sendError(404,  "Category id not found");
-				return null;
-			}
-	
-	
-			return category;
-		
-		} catch (Exception e) {
-			LOGGER.error("Error while getting category",e);
-			try {
-				response.sendError(503, "Error while getting category " + e.getMessage());
-			} catch (Exception ignore) {
-			}
-			return null;
-		}
-	}
-	
-	/**
-	 * Get all category starting from root
-	 * filter can be used for filtering on fields
-	 * only featured is supported
-	 * @param lang
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/category", method=RequestMethod.GET)
-	public @ResponseBody List <ReadableCategory> getFiltered(
-			@RequestParam(value = "filter", required=false) String filter,
-			@RequestParam(value = "lang", required=false) 
-			String lang, HttpServletRequest request, HttpServletResponse response) throws Exception {
-	
-		try {
-			MerchantStore merchantStore = storeFacade.getByCode(request);
-			Language language = languageUtils.getRESTLanguage(request, merchantStore);	
-			
-			List <ReadableCategory> category  = categoryFacade.getCategoryHierarchy(merchantStore, 0, language, filter);
+
+  @Inject
+  private CategoryFacade categoryFacade;
+
+  @Inject
+  private CategoryService categoryService;
+
+  @Inject
+  @Qualifier("img")
+  private ImageFilePath imageUtils;
+
+  @Inject
+  private StoreFacade storeFacade;
+
+  @Inject
+  private LanguageUtils languageUtils;
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(CategoryApi.class);
 
 
-			return category;
-		
-		} catch (Exception e) {
-			LOGGER.error("Error while getting root category",e);
-			try {
-				response.sendError(503, "Error while getting root category " + e.getMessage());
-			} catch (Exception ignore) {
-			}
-			return null;
-		}
-	}
-	
-	/**
-	 * Category creation
-	 */
-	@RequestMapping( value="/private/category", method=RequestMethod.POST)
-	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody PersistableCategory createCategory(@Valid @RequestBody PersistableCategory category, HttpServletRequest request, HttpServletResponse response) {
-		
-		
-		try {
+  @RequestMapping(value = "/category/{id}", method = RequestMethod.GET)
+  @ApiOperation(httpMethod = "GET", value = "Get category list for an given Category id", notes = "List current Category and child category")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "List of category found", response = ReadableCategory.class)})
+  public @ResponseBody
+  ReadableCategory get(@PathVariable final Long id,
+      @RequestParam(value = "lang", required = false) String lang, HttpServletRequest request,
+      HttpServletResponse response) throws Exception {
 
+    try {
+      MerchantStore merchantStore = storeFacade.getByCode(request);
+      Language language = languageUtils.getRESTLanguage(request, merchantStore);
 
-			MerchantStore merchantStore = storeFacade.getByCode(request);
-			Language language = languageUtils.getRESTLanguage(request, merchantStore);	
-			categoryFacade.saveCategory(merchantStore, category);
+      ReadableCategory category = categoryFacade.getById(merchantStore, id, language);
 
-			
-			category.setId(category.getId());
+      if (category == null) {
+        response.sendError(404, "Category id not found");
+        return null;
+      }
 
-			return category;
-		
-		} catch (Exception e) {
-			LOGGER.error("Error while creating category",e);
-			try {
-				response.sendError(503, "Error while creating category " + e.getMessage());
-			} catch (Exception ignore) {
-			}
-			return null;
-		}
-	}
-	
-    @ResponseStatus(HttpStatus.OK)
-	@RequestMapping( value="/private/category/{id}", method=RequestMethod.PUT)
-    public @ResponseBody PersistableCategory update(@PathVariable Long id, @Valid @RequestBody PersistableCategory category, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-		try {
-			
-			MerchantStore merchantStore = storeFacade.getByCode(request);
-			categoryFacade.saveCategory(merchantStore, category);
+      return category;
 
-			return category;
-			
-		} catch (Exception e) {
-			LOGGER.error("Error while updating category",e);
-			try {
-				response.sendError(503, "Error while updating category " + e.getMessage());
-			} catch (Exception ignore) {
-			}
-			
-			return null;
-		}
-		
-	}
-    
-    @ResponseStatus(HttpStatus.OK)
-	@RequestMapping( value="/private/category/{id}", method=RequestMethod.DELETE)
-    public void delete(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-		try {
-			Category category = categoryService.getById(id);
-			if(category != null){
-				categoryFacade.deleteCategory(category);
-			}else{
-				response.sendError(404, "No Category found for ID : " + id);
-			}
-		} catch (Exception e) {
-			LOGGER.error("Error while deleting category",e);
-			try {
-				response.sendError(503, "Error while deleting category " + e.getMessage());
-			} catch (Exception ignore) {
-			}
-		}
-	}
+    } catch (Exception e) {
+      LOGGER.error("Error while getting category", e);
+      try {
+        response.sendError(503, "Error while getting category " + e.getMessage());
+      } catch (Exception ignore) {
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Get all category starting from root filter can be used for filtering on fields only featured is
+   * supported
+   */
+  @RequestMapping(value = "/category", method = RequestMethod.GET)
+  public @ResponseBody
+  List<ReadableCategory> getFiltered(
+      @RequestParam(value = "filter", required = false) String filter,
+      @RequestParam(value = "lang", required = false)
+          String lang, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+    try {
+      MerchantStore merchantStore = storeFacade.getByCode(request);
+      Language language = languageUtils.getRESTLanguage(request, merchantStore);
+
+      List<ReadableCategory> category = categoryFacade
+          .getCategoryHierarchy(merchantStore, 0, language, filter);
+
+      return category;
+
+    } catch (Exception e) {
+      LOGGER.error("Error while getting root category", e);
+      try {
+        response.sendError(503, "Error while getting root category " + e.getMessage());
+      } catch (Exception ignore) {
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Category creation
+   */
+  @RequestMapping(value = "/private/category", method = RequestMethod.POST)
+  @ResponseStatus(HttpStatus.OK)
+  public @ResponseBody
+  PersistableCategory createCategory(@Valid @RequestBody PersistableCategory category,
+      HttpServletRequest request, HttpServletResponse response) {
+
+    try {
+
+      MerchantStore merchantStore = storeFacade.getByCode(request);
+      Language language = languageUtils.getRESTLanguage(request, merchantStore);
+      categoryFacade.saveCategory(merchantStore, category);
+
+      category.setId(category.getId());
+
+      return category;
+
+    } catch (Exception e) {
+      LOGGER.error("Error while creating category", e);
+      try {
+        response.sendError(503, "Error while creating category " + e.getMessage());
+      } catch (Exception ignore) {
+      }
+      return null;
+    }
+  }
+
+  @ResponseStatus(HttpStatus.OK)
+  @RequestMapping(value = "/private/category/{id}", method = RequestMethod.PUT)
+  public @ResponseBody
+  PersistableCategory update(@PathVariable Long id,
+      @Valid @RequestBody PersistableCategory category, HttpServletRequest request,
+      HttpServletResponse response) throws Exception {
+
+    try {
+
+      MerchantStore merchantStore = storeFacade.getByCode(request);
+      categoryFacade.saveCategory(merchantStore, category);
+
+      return category;
+
+    } catch (Exception e) {
+      LOGGER.error("Error while updating category", e);
+      try {
+        response.sendError(503, "Error while updating category " + e.getMessage());
+      } catch (Exception ignore) {
+      }
+
+      return null;
+    }
+
+  }
+
+  @ResponseStatus(HttpStatus.OK)
+  @RequestMapping(value = "/private/category/{id}", method = RequestMethod.DELETE)
+  public void delete(@PathVariable Long id, HttpServletRequest request,
+      HttpServletResponse response) throws Exception {
+
+    try {
+      Category category = categoryService.getById(id);
+      if (category != null) {
+        categoryFacade.deleteCategory(category);
+      } else {
+        response.sendError(404, "No Category found for ID : " + id);
+      }
+    } catch (Exception e) {
+      LOGGER.error("Error while deleting category", e);
+      try {
+        response.sendError(503, "Error while deleting category " + e.getMessage());
+      } catch (Exception ignore) {
+      }
+    }
+  }
 
 }

@@ -33,153 +33,139 @@ import com.salesmanager.shop.utils.LanguageUtils;
 
 /**
  * Get system Language, Country and Currency objects
- * @author c.samson
  *
+ * @author c.samson
  */
 @Controller
 @RequestMapping("/api/v1")
 public class ReferencesApi {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ReferencesApi.class);
 
-	
-	@Inject
-	private LanguageService languageService;
-	
-	@Inject
-	private CountryService countryService;
-	
-	@Inject
-	private StoreFacade storeFacade;
-	
-	@Inject
-	private CurrencyService currencyService;;
-	
-	@Inject
-	private LanguageUtils languageUtils;
-	
-	/**
-	 * Search languages by language code
-	 * private/languages returns everything
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping( value="/languages", method=RequestMethod.GET)
-	@ResponseStatus(HttpStatus.OK)
-	@ResponseBody
-	public ResponseEntity<List<Language>> getLanguages(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-		
-		try {
-			
-			List<Language> langs = languageService.getLanguages();
-			
-			if(CollectionUtils.isEmpty(langs)){
-				response.sendError(404, "No languages found");
-			}
-			
-			return ResponseEntity.ok().body(langs);
-		} catch (Exception e) {
-			LOGGER.error("Error while getting languages",e);
-			try {
-				response.sendError(503, "Error while getting languages " + e.getMessage());
-			} catch (Exception ignore) {
-			}
-		}
-		
-		return null;
-		
-	}
-	
-	/**
-	 * Returns a country with zones (provinces, states)
-	 * supports language set in parameter ?lang=en|fr|ru...
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping( value="/country", method=RequestMethod.GET)
-	@ResponseStatus(HttpStatus.OK)
-	@ResponseBody
-	public ResponseEntity<List<ReadableCountry>> getCountry(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-
-		try {
-			
-			MerchantStore merchantStore = storeFacade.getByCode(request);
-			Language lang = languageUtils.getRESTLanguage(request, merchantStore);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ReferencesApi.class);
 
 
-			List<Country> country = countryService.listCountryZones(lang);
+  @Inject
+  private LanguageService languageService;
 
-			if(CollectionUtils.isEmpty(country)){
-				response.sendError(404, "No country found");
-			}
-			
-			List<ReadableCountry> countryList = new ArrayList<ReadableCountry>();
-			
-			
-			for(Country c : country) {
-			
-				/**
-				 * Populator will convert to readable format
-				 */
-				ReadableCountry rc = new ReadableCountry();
-				ReadableCountryPopulator populator = new ReadableCountryPopulator();
-				populator.populate(c, rc, merchantStore, lang);
-				countryList.add(rc);
-			
-			}
-			
-			return ResponseEntity.ok().body(countryList);
-		} catch (Exception e) {
-			LOGGER.error("Error while getting country",e);
-			try {
-				response.sendError(503, "Error while getting country " + e.getMessage());
-			} catch (Exception ignore) {
-			}
-		}
-		
-		return null;
-		
-	}
-	
-	
-	/**
-	 * Currency
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping( value="/currency", method=RequestMethod.GET)
-	@ResponseStatus(HttpStatus.OK)
-	@ResponseBody
-	public ResponseEntity<List<Currency>> getCurrency(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-		
-		try {
-			
-			List<Currency> currency = currencyService.list();
-			
-			if(CollectionUtils.isEmpty(currency)){
-				response.sendError(404, "No languages found");
-			}
-			
-			return ResponseEntity.ok().body(currency);
-		} catch (Exception e) {
-			LOGGER.error("Error while getting currency",e);
-			try {
-				response.sendError(503, "Error while getting currency " + e.getMessage());
-			} catch (Exception ignore) {
-			}
-		}
-		
-		return null;
-		
-	}
+  @Inject
+  private CountryService countryService;
+
+  @Inject
+  private StoreFacade storeFacade;
+
+  @Inject
+  private CurrencyService currencyService;
+  ;
+
+  @Inject
+  private LanguageUtils languageUtils;
+
+  /**
+   * Search languages by language code private/languages returns everything
+   */
+  @RequestMapping(value = "/languages", method = RequestMethod.GET)
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public ResponseEntity<List<Language>> getLanguages(HttpServletRequest request,
+      HttpServletResponse response) throws Exception {
+
+    try {
+
+      List<Language> langs = languageService.getLanguages();
+
+      if (CollectionUtils.isEmpty(langs)) {
+        response.sendError(404, "No languages found");
+      }
+
+      return ResponseEntity.ok().body(langs);
+    } catch (Exception e) {
+      LOGGER.error("Error while getting languages", e);
+      try {
+        response.sendError(503, "Error while getting languages " + e.getMessage());
+      } catch (Exception ignore) {
+      }
+    }
+
+    return null;
+
+  }
+
+  /**
+   * Returns a country with zones (provinces, states) supports language set in parameter
+   * ?lang=en|fr|ru...
+   */
+  @RequestMapping(value = "/country", method = RequestMethod.GET)
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public ResponseEntity<List<ReadableCountry>> getCountry(HttpServletRequest request,
+      HttpServletResponse response) throws Exception {
+
+    try {
+
+      MerchantStore merchantStore = storeFacade.getByCode(request);
+      Language lang = languageUtils.getRESTLanguage(request, merchantStore);
+
+      List<Country> country = countryService.listCountryZones(lang);
+
+      if (CollectionUtils.isEmpty(country)) {
+        response.sendError(404, "No country found");
+      }
+
+      List<ReadableCountry> countryList = new ArrayList<ReadableCountry>();
+
+      for (Country c : country) {
+
+        /**
+         * Populator will convert to readable format
+         */
+        ReadableCountry rc = new ReadableCountry();
+        ReadableCountryPopulator populator = new ReadableCountryPopulator();
+        populator.populate(c, rc, merchantStore, lang);
+        countryList.add(rc);
+
+      }
+
+      return ResponseEntity.ok().body(countryList);
+    } catch (Exception e) {
+      LOGGER.error("Error while getting country", e);
+      try {
+        response.sendError(503, "Error while getting country " + e.getMessage());
+      } catch (Exception ignore) {
+      }
+    }
+
+    return null;
+
+  }
+
+
+  /**
+   * Currency
+   */
+  @RequestMapping(value = "/currency", method = RequestMethod.GET)
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public ResponseEntity<List<Currency>> getCurrency(HttpServletRequest request,
+      HttpServletResponse response) throws Exception {
+
+    try {
+
+      List<Currency> currency = currencyService.list();
+
+      if (CollectionUtils.isEmpty(currency)) {
+        response.sendError(404, "No languages found");
+      }
+
+      return ResponseEntity.ok().body(currency);
+    } catch (Exception e) {
+      LOGGER.error("Error while getting currency", e);
+      try {
+        response.sendError(503, "Error while getting currency " + e.getMessage());
+      } catch (Exception ignore) {
+      }
+    }
+
+    return null;
+
+  }
 
 }

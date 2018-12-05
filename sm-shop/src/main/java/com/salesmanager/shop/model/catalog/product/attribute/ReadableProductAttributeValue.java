@@ -2,29 +2,29 @@ package com.salesmanager.shop.model.catalog.product.attribute;
 
 public class ReadableProductAttributeValue extends ProductOptionValue {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	private String name;
-	private String lang;
+  /**
+   *
+   */
+  private static final long serialVersionUID = 1L;
 
-	public String getName() {
-		return name;
-	}
+  private String name;
+  private String lang;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public String getLang() {
-		return lang;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void setLang(String lang) {
-		this.lang = lang;
-	}
+  public String getLang() {
+    return lang;
+  }
+
+  public void setLang(String lang) {
+    this.lang = lang;
+  }
 
 
 }

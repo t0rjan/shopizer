@@ -25,9 +25,9 @@ import com.salesmanager.core.model.merchant.MerchantStore;
 
 /**
  * Manager for storing and deleting image files from the CMS which is a web server
- * 
+ *
  * Manages - Product images
- * 
+ *
  * @author Carl Samson
  */
 public class CmsImageFileManagerImpl
@@ -35,7 +35,7 @@ public class CmsImageFileManagerImpl
     implements ProductAssetsManager {
 
   /**
-   * 
+   *
    */
   private static final long serialVersionUID = 1L;
 
@@ -84,7 +84,6 @@ public class CmsImageFileManagerImpl
   public void addProductImage(ProductImage productImage, ImageContentFile contentImage)
       throws ServiceException {
 
-
     try {
 
       // base path
@@ -114,10 +113,8 @@ public class CmsImageFileManagerImpl
       Path sizePath = Paths.get(nodePath.toString());
       this.createDirectoryIfNorExist(sizePath);
 
-
       // file creation
       nodePath.append(Constants.SLASH).append(contentImage.getFileName());
-
 
       Path path = Paths.get(nodePath.toString());
       InputStream isFile = contentImage.getFile();
@@ -160,12 +157,10 @@ public class CmsImageFileManagerImpl
   }
 
 
-
   @Override
   public void removeImages(final String merchantStoreCode) throws ServiceException {
 
     try {
-
 
       StringBuilder merchantPath = new StringBuilder();
       merchantPath.append(buildRootPath()).append(Constants.SLASH).append(merchantStoreCode);
@@ -186,9 +181,7 @@ public class CmsImageFileManagerImpl
   @Override
   public void removeProductImage(ProductImage productImage) throws ServiceException {
 
-
     try {
-
 
       StringBuilder nodePath = new StringBuilder();
       nodePath.append(buildRootPath()).append(Constants.SLASH)
@@ -200,7 +193,6 @@ public class CmsImageFileManagerImpl
       smallPath.append(Constants.SLASH).append(SMALL).append(Constants.SLASH)
           .append(productImage.getProductImage());
 
-
       Path path = Paths.get(smallPath.toString());
 
       Files.deleteIfExists(path);
@@ -209,7 +201,6 @@ public class CmsImageFileManagerImpl
       StringBuilder largePath = new StringBuilder(nodePath);
       largePath.append(Constants.SLASH).append(LARGE).append(Constants.SLASH)
           .append(productImage.getProductImage());
-
 
       path = Paths.get(largePath.toString());
 
@@ -227,12 +218,10 @@ public class CmsImageFileManagerImpl
 
     try {
 
-
       StringBuilder nodePath = new StringBuilder();
       nodePath.append(buildRootPath()).append(Constants.SLASH)
           .append(product.getMerchantStore().getCode()).append(Constants.SLASH)
           .append(product.getSku());
-
 
       Path path = Paths.get(nodePath.toString());
 
@@ -304,7 +293,6 @@ public class CmsImageFileManagerImpl
   public void setCacheManager(LocalCacheManagerImpl cacheManager) {
     this.cacheManager = cacheManager;
   }
-
 
 
 }

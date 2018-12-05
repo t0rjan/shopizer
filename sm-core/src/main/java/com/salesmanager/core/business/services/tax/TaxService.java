@@ -11,37 +11,25 @@ import com.salesmanager.core.model.tax.TaxConfiguration;
 import com.salesmanager.core.model.tax.TaxItem;
 
 
-public interface TaxService   {
+public interface TaxService {
 
-	/**
-	 * Retrieves tax configurations (TaxConfiguration) for a given MerchantStore
-	 * @param store
-	 * @return
-	 * @throws ServiceException
-	 */
-	TaxConfiguration getTaxConfiguration(MerchantStore store)
-			throws ServiceException;
+  /**
+   * Retrieves tax configurations (TaxConfiguration) for a given MerchantStore
+   */
+  TaxConfiguration getTaxConfiguration(MerchantStore store)
+      throws ServiceException;
 
-	/**
-	 * Saves ShippingConfiguration to MerchantConfiguration table
-	 * @param shippingConfiguration
-	 * @param store
-	 * @throws ServiceException
-	 */
-	void saveTaxConfiguration(TaxConfiguration shippingConfiguration,
-			MerchantStore store) throws ServiceException;
+  /**
+   * Saves ShippingConfiguration to MerchantConfiguration table
+   */
+  void saveTaxConfiguration(TaxConfiguration shippingConfiguration,
+      MerchantStore store) throws ServiceException;
 
-	/**
-	 * Calculates tax over an OrderSummary
-	 * @param orderSummary
-	 * @param customer
-	 * @param store
-	 * @param locale
-	 * @return
-	 * @throws ServiceException
-	 */
-	List<TaxItem> calculateTax(OrderSummary orderSummary, Customer customer,
-			MerchantStore store, Language language) throws ServiceException;
+  /**
+   * Calculates tax over an OrderSummary
+   */
+  List<TaxItem> calculateTax(OrderSummary orderSummary, Customer customer,
+      MerchantStore store, Language language) throws ServiceException;
 
 
 }

@@ -13,42 +13,40 @@ import com.salesmanager.core.business.services.tax.TaxClassService;
 import com.salesmanager.core.model.merchant.MerchantStore;
 
 @Service("merchantService")
-public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Integer, MerchantStore> 
-		implements MerchantStoreService {
-	
-
-		
-	@Inject
-	protected ProductTypeService productTypeService;
-	
-
-	
-	private MerchantRepository merchantRepository;
-	
-	@Inject
-	public MerchantStoreServiceImpl(MerchantRepository merchantRepository) {
-		super(merchantRepository);
-		this.merchantRepository = merchantRepository;
-	}
+public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Integer, MerchantStore>
+    implements MerchantStoreService {
 
 
-	public MerchantStore getMerchantStore(String merchantStoreCode) throws ServiceException {
-		return merchantRepository.findByCode(merchantStoreCode);
-	}
-	
-	@Override
-	public void saveOrUpdate(MerchantStore store) throws ServiceException {
-				
-		super.save(store);
+  @Inject
+  protected ProductTypeService productTypeService;
 
-	}
-	
 
-	@Override
-	public MerchantStore getByCode(String code) throws ServiceException {
-		
-		return merchantRepository.findByCode(code);
-	}
+  private MerchantRepository merchantRepository;
+
+  @Inject
+  public MerchantStoreServiceImpl(MerchantRepository merchantRepository) {
+    super(merchantRepository);
+    this.merchantRepository = merchantRepository;
+  }
+
+
+  public MerchantStore getMerchantStore(String merchantStoreCode) throws ServiceException {
+    return merchantRepository.findByCode(merchantStoreCode);
+  }
+
+  @Override
+  public void saveOrUpdate(MerchantStore store) throws ServiceException {
+
+    super.save(store);
+
+  }
+
+
+  @Override
+  public MerchantStore getByCode(String code) throws ServiceException {
+
+    return merchantRepository.findByCode(code);
+  }
 	
 /*	@Override
 	public void delete(MerchantStore merchant) throws ServiceException {

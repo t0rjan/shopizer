@@ -33,55 +33,56 @@ import com.salesmanager.core.business.configuration.CoreApplicationConfiguration
 import com.salesmanager.core.constants.SchemaConstant;
 
 @Configuration
-@ComponentScan({"com.salesmanager.shop","com.salesmanager.core.business"})
+@ComponentScan({"com.salesmanager.shop", "com.salesmanager.core.business"})
 @EnableAutoConfiguration
 @Import(CoreApplicationConfiguration.class)//import sm-core configurations
 @ImportResource({"classpath:/spring/shopizer-shop-context.xml"})
 @EnableWebSecurity
-public class ShopApplicationConfiguration extends WebMvcConfigurerAdapter{
+public class ShopApplicationConfiguration extends WebMvcConfigurerAdapter {
 
-	protected final Log logger = LogFactory.getLog(getClass());
-	
-	@Value("${facebook.app.id}")
-	private String facebookAppId;
-	
-	@Value("${facebook.app.secret}")
-	private String facebookAppSecret;
-	
-    @Inject
-    private DataSource dataSource;
+  protected final Log logger = LogFactory.getLog(getClass());
 
-    @Inject
-    private TextEncryptor textEncryptor;
-	
-	@EventListener(ApplicationReadyEvent.class)
-	public void applicationReadyCode() {
-		String workingDir = System.getProperty("user.dir");
-		System.out.println("Current working directory : " + workingDir);
-	}
-	
+  @Value("${facebook.app.id}")
+  private String facebookAppId;
 
-    /**
-     * Configure TilesConfigurer.
-     */
-    @Bean
-    public TilesConfigurer tilesConfigurer(){
-        TilesConfigurer tilesConfigurer = new TilesConfigurer();
-        tilesConfigurer.setDefinitions(new String[] {"/WEB-INF/tiles/tiles-admin.xml","/WEB-INF/tiles/tiles-shop.xml"});
-        tilesConfigurer.setCheckRefresh(true);
-        return tilesConfigurer;
-    }
- 
-    /**
-     * Configure ViewResolvers to deliver preferred views.
-     */
+  @Value("${facebook.app.secret}")
+  private String facebookAppSecret;
 
-    @Bean
-    public TilesViewResolver tilesViewResolver() {
-        final TilesViewResolver resolver = new TilesViewResolver();
-        resolver.setViewClass(TilesView.class);
-        return resolver;
-    }
+  @Inject
+  private DataSource dataSource;
+
+  @Inject
+  private TextEncryptor textEncryptor;
+
+  @EventListener(ApplicationReadyEvent.class)
+  public void applicationReadyCode() {
+    String workingDir = System.getProperty("user.dir");
+    System.out.println("Current working directory : " + workingDir);
+  }
+
+
+  /**
+   * Configure TilesConfigurer.
+   */
+  @Bean
+  public TilesConfigurer tilesConfigurer() {
+    TilesConfigurer tilesConfigurer = new TilesConfigurer();
+    tilesConfigurer.setDefinitions(
+        new String[]{"/WEB-INF/tiles/tiles-admin.xml", "/WEB-INF/tiles/tiles-shop.xml"});
+    tilesConfigurer.setCheckRefresh(true);
+    return tilesConfigurer;
+  }
+
+  /**
+   * Configure ViewResolvers to deliver preferred views.
+   */
+
+  @Bean
+  public TilesViewResolver tilesViewResolver() {
+    final TilesViewResolver resolver = new TilesViewResolver();
+    resolver.setViewClass(TilesView.class);
+    return resolver;
+  }
 
     
 /*    @Bean
@@ -94,47 +95,43 @@ public class ShopApplicationConfiguration extends WebMvcConfigurerAdapter{
             
         return registry;
     }*/
-    
-    @Bean
-    @Scope(value = "singleton", proxyMode = ScopedProxyMode.INTERFACES)
-    public SocialAuthenticationServiceLocator authenticationServiceLocator() {
-		 
-    	 try {
-    		 
-    		 logger.debug("Creating social authenticators");
-    		 
-    	
-	    	 SocialAuthenticationServiceRegistry registry = new SocialAuthenticationServiceRegistry();
-			 registry.addAuthenticationService(
-				new FacebookAuthenticationService(
-						facebookAppId, 
-						facebookAppSecret));
 
-			 // registry.addConnectionFactory(new
-			 // FacebookConnectionFactory(environment
-			 // .getProperty("facebook.clientId"), environment
-			 // .getProperty("facebook.clientSecret")));
-			 
-			 return registry;
-		 
-    	 } catch(Exception e) {
-    		 logger.error("Eror while creating social authenticators");
-    		 return null;
-    	 }
+  @Bean
+  @Scope(value = "singleton", proxyMode = ScopedProxyMode.INTERFACES)
+  public SocialAuthenticationServiceLocator authenticationServiceLocator() {
+
+    try {
+
+      logger.debug("Creating social authenticators");
+
+      SocialAuthenticationServiceRegistry registry = new SocialAuthenticationServiceRegistry();
+      registry.addAuthenticationService(
+          new FacebookAuthenticationService(
+              facebookAppId,
+              facebookAppSecret));
+
+      // registry.addConnectionFactory(new
+      // FacebookConnectionFactory(environment
+      // .getProperty("facebook.clientId"), environment
+      // .getProperty("facebook.clientSecret")));
+
+      return registry;
+
+    } catch (Exception e) {
+      logger.error("Eror while creating social authenticators");
+      return null;
     }
-    
-    @Bean
-    public UsersConnectionRepository socialUsersConnectionRepository() {
-    	JdbcUsersConnectionRepository conn = new JdbcUsersConnectionRepository(dataSource, authenticationServiceLocator(), 
-            textEncryptor);
-    	conn.setTablePrefix(SchemaConstant.SALESMANAGER_SCHEMA + ".");
-    	return conn;
+  }
 
-    }
+  @Bean
+  public UsersConnectionRepository socialUsersConnectionRepository() {
+    JdbcUsersConnectionRepository conn = new JdbcUsersConnectionRepository(dataSource,
+        authenticationServiceLocator(),
+        textEncryptor);
+    conn.setTablePrefix(SchemaConstant.SALESMANAGER_SCHEMA + ".");
+    return conn;
 
-
-    
-    
+  }
 
 
 }

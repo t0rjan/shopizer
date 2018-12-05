@@ -14,43 +14,43 @@ import com.salesmanager.core.utils.CloneUtils;
 public class AuditSection implements Serializable {
 
 
-	private static final long serialVersionUID = -1934446958975060889L;
+  private static final long serialVersionUID = -1934446958975060889L;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "DATE_CREATED")
-	private Date dateCreated;
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "DATE_CREATED")
+  private Date dateCreated;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "DATE_MODIFIED")
-	private Date dateModified;
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "DATE_MODIFIED")
+  private Date dateModified;
 
-	@Column(name = "UPDT_ID", length=20)
-	private String modifiedBy;
-	
-	public AuditSection() {
-	}
+  @Column(name = "UPDT_ID", length = 20)
+  private String modifiedBy;
 
-	public Date getDateCreated() {
-		return CloneUtils.clone(dateCreated);
-	}
+  public AuditSection() {
+  }
 
-	public void setDateCreated(Date dateCreated) {
-		this.dateCreated = CloneUtils.clone(dateCreated);
-	}
+  public Date getDateCreated() {
+    return CloneUtils.clone(dateCreated);
+  }
 
-	public Date getDateModified() {
-		return CloneUtils.clone(dateModified);
-	}
+  public void setDateCreated(Date dateCreated) {
+    this.dateCreated = CloneUtils.clone(dateCreated);
+  }
 
-	public void setDateModified(Date dateModified) {
-		this.dateModified = CloneUtils.clone(dateModified);
-	}
+  public Date getDateModified() {
+    return CloneUtils.clone(dateModified);
+  }
 
-	public String getModifiedBy() {
-		return modifiedBy;
-	}
+  public void setDateModified(Date dateModified) {
+    this.dateModified = CloneUtils.clone(dateModified);
+  }
 
-	public void setModifiedBy(String modifiedBy) {
-		this.modifiedBy = modifiedBy;
-	}
+  public String getModifiedBy() {
+    return modifiedBy;
+  }
+
+  public void setModifiedBy(String modifiedBy) {
+    this.modifiedBy = modifiedBy;
+  }
 }

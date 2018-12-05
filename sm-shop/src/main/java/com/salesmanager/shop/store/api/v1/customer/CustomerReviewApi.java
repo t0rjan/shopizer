@@ -34,194 +34,188 @@ import com.salesmanager.shop.utils.LanguageUtils;
 @Controller
 @RequestMapping("/api/v1")
 public class CustomerReviewApi {
-	
-	@Inject
-	private CustomerFacade customerFacade;
-	
-	@Inject
-	private StoreFacade storeFacade;
-	
-	@Inject
-	private LanguageUtils languageUtils;
 
-	@Inject
-	private CustomerService customerService;
-	
-	@Inject
-	private CustomerReviewService customerReviewService;
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerReviewApi.class);
-	
-	
-	/**
-	 * Reviews made for a given customer
-	 * @param id
-	 * @param review
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping( value="/private/customers/{id}/reviews", method=RequestMethod.POST)
-	@ResponseStatus(HttpStatus.CREATED)
-	@ResponseBody
-	public PersistableCustomerReview create(@PathVariable final Long id, @Valid @RequestBody PersistableCustomerReview review, HttpServletRequest request, HttpServletResponse response) throws Exception {
+  @Inject
+  private CustomerFacade customerFacade;
 
-		
-		try {
-			
-			MerchantStore merchantStore = storeFacade.getByCode(request);
-			Language language = languageUtils.getRESTLanguage(request, merchantStore);	
-			
-			
-			//rating already exist
-			CustomerReview customerReview = customerReviewService.getByReviewerAndReviewed(review.getCustomerId(), id);
-			if(customerReview!=null) {
-				response.sendError(500, "A review already exist for this customer and product");
-				return null;
-			}
-			
-			//rating maximum 5
-			if(review.getRating()>Constants.MAX_REVIEW_RATING_SCORE) {
-				response.sendError(503, "Maximum rating score is " + Constants.MAX_REVIEW_RATING_SCORE);
-				return null;
-			}
-			
-			review.setReviewedCustomer(id);
-			
-			customerFacade.saveOrUpdateCustomerReview(review, merchantStore, language);
+  @Inject
+  private StoreFacade storeFacade;
 
-			return review;
-			
-		} catch (Exception e) {
-			LOGGER.error("Error while saving product review",e);
-			try {
-				response.sendError(503, "Error while saving product review" + e.getMessage());
-			} catch (Exception ignore) {
-			}
-			
-			return null;
-		}
-	}
-	
-	
+  @Inject
+  private LanguageUtils languageUtils;
 
-	@RequestMapping( value="/customers/{id}/reviews", method=RequestMethod.GET)
-	@ResponseStatus(HttpStatus.OK)
-	@ResponseBody
-	public List<ReadableCustomerReview> getAll(@PathVariable final Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+  @Inject
+  private CustomerService customerService;
 
-		
-		try {
-			
-			MerchantStore merchantStore = storeFacade.getByCode(request);
-			Language language = languageUtils.getRESTLanguage(request, merchantStore);	
-			
-			//customer exist
-			Customer reviewed = customerService.getById(id);
+  @Inject
+  private CustomerReviewService customerReviewService;
 
-			if(reviewed == null) {
-				response.sendError(404, "Customer id " + id + " does not exists");
-				return null;
-			}
-
-			List<ReadableCustomerReview> reviews = customerFacade.getAllCustomerReviewsByReviewed(reviewed, merchantStore, language);
-			
-			return reviews;
-			
-		} catch (Exception e) {
-			LOGGER.error("Error while getting customer reviews",e);
-			try {
-				response.sendError(503, "Error while getting customer reviews" + e.getMessage());
-			} catch (Exception ignore) {
-			}
-			
-			return null;
-		}
-	}
-
-	@RequestMapping( value="/private/customers/{id}/reviews/{reviewid}", method=RequestMethod.PUT)
-	@ResponseStatus(HttpStatus.OK)
-	@ResponseBody
-	public PersistableCustomerReview update(@PathVariable final Long id, @PathVariable final Long reviewId, @Valid @RequestBody PersistableCustomerReview review, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-		
-		try {
-			
-			MerchantStore merchantStore = storeFacade.getByCode(request);
-			Language language = languageUtils.getRESTLanguage(request, merchantStore);	
-			
-			CustomerReview customerReview = customerReviewService.getById(reviewId);
-			if(customerReview==null) {
-				response.sendError(404, "Customer review with id " + reviewId + " does not exist");
-				return null;
-			}
-			
-			if(customerReview.getReviewedCustomer().getId().longValue() != id.longValue()) {
-				response.sendError(404, "Customer review with id " + reviewId + " does not exist for this customer");
-				return null;
-			}
-			
-			//rating maximum 5
-			if(review.getRating()>Constants.MAX_REVIEW_RATING_SCORE) {
-				response.sendError(503, "Maximum rating score is " + Constants.MAX_REVIEW_RATING_SCORE);
-				return null;
-			}
-			
-			review.setReviewedCustomer(id);
-			
-			customerFacade.saveOrUpdateCustomerReview(review, merchantStore, language);
-
-			return review;
-			
-		} catch (Exception e) {
-			LOGGER.error("Error while updating customer review",e);
-			try {
-				response.sendError(503, "Error while updating customer review" + e.getMessage());
-			} catch (Exception ignore) {
-			}
-			
-			return null;
-		}
-	}
-	
-	@RequestMapping( value="/private/customers/{id}/reviews/{reviewid}", method=RequestMethod.DELETE)
-	@ResponseStatus(HttpStatus.OK)
-	@ResponseBody
-	public void delete(@PathVariable final Long id, @PathVariable final Long reviewId, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-		
-		try {
-			
-			MerchantStore merchantStore = storeFacade.getByCode(request);
-			Language language = languageUtils.getRESTLanguage(request, merchantStore);	
-			
-			CustomerReview customerReview = customerReviewService.getById(reviewId);
-			if(customerReview==null) {
-				response.sendError(404, "Customer review with id " + reviewId + " does not exist");
-				return;
-			}
-			
-			if(customerReview.getReviewedCustomer().getId().longValue() != id.longValue()) {
-				response.sendError(404, "Customer review with id " + reviewId + " does not exist for this customer");
-				return;
-			}
-			
-			
+  private static final Logger LOGGER = LoggerFactory.getLogger(CustomerReviewApi.class);
 
 
-			customerFacade.deleteCustomerReview(customerReview, merchantStore, language);
+  /**
+   * Reviews made for a given customer
+   */
+  @RequestMapping(value = "/private/customers/{id}/reviews", method = RequestMethod.POST)
+  @ResponseStatus(HttpStatus.CREATED)
+  @ResponseBody
+  public PersistableCustomerReview create(@PathVariable final Long id,
+      @Valid @RequestBody PersistableCustomerReview review, HttpServletRequest request,
+      HttpServletResponse response) throws Exception {
+
+    try {
+
+      MerchantStore merchantStore = storeFacade.getByCode(request);
+      Language language = languageUtils.getRESTLanguage(request, merchantStore);
+
+      //rating already exist
+      CustomerReview customerReview = customerReviewService
+          .getByReviewerAndReviewed(review.getCustomerId(), id);
+      if (customerReview != null) {
+        response.sendError(500, "A review already exist for this customer and product");
+        return null;
+      }
+
+      //rating maximum 5
+      if (review.getRating() > Constants.MAX_REVIEW_RATING_SCORE) {
+        response.sendError(503, "Maximum rating score is " + Constants.MAX_REVIEW_RATING_SCORE);
+        return null;
+      }
+
+      review.setReviewedCustomer(id);
+
+      customerFacade.saveOrUpdateCustomerReview(review, merchantStore, language);
+
+      return review;
+
+    } catch (Exception e) {
+      LOGGER.error("Error while saving product review", e);
+      try {
+        response.sendError(503, "Error while saving product review" + e.getMessage());
+      } catch (Exception ignore) {
+      }
+
+      return null;
+    }
+  }
 
 
-			
-		} catch (Exception e) {
-			LOGGER.error("Error while deleting customer review",e);
-			try {
-				response.sendError(503, "Error while deleting customer review" + e.getMessage());
-			} catch (Exception ignore) {
-			}
-			
-			return;
-		}
-	}
+  @RequestMapping(value = "/customers/{id}/reviews", method = RequestMethod.GET)
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public List<ReadableCustomerReview> getAll(@PathVariable final Long id,
+      HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+    try {
+
+      MerchantStore merchantStore = storeFacade.getByCode(request);
+      Language language = languageUtils.getRESTLanguage(request, merchantStore);
+
+      //customer exist
+      Customer reviewed = customerService.getById(id);
+
+      if (reviewed == null) {
+        response.sendError(404, "Customer id " + id + " does not exists");
+        return null;
+      }
+
+      List<ReadableCustomerReview> reviews = customerFacade
+          .getAllCustomerReviewsByReviewed(reviewed, merchantStore, language);
+
+      return reviews;
+
+    } catch (Exception e) {
+      LOGGER.error("Error while getting customer reviews", e);
+      try {
+        response.sendError(503, "Error while getting customer reviews" + e.getMessage());
+      } catch (Exception ignore) {
+      }
+
+      return null;
+    }
+  }
+
+  @RequestMapping(value = "/private/customers/{id}/reviews/{reviewid}", method = RequestMethod.PUT)
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public PersistableCustomerReview update(@PathVariable final Long id,
+      @PathVariable final Long reviewId, @Valid @RequestBody PersistableCustomerReview review,
+      HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+    try {
+
+      MerchantStore merchantStore = storeFacade.getByCode(request);
+      Language language = languageUtils.getRESTLanguage(request, merchantStore);
+
+      CustomerReview customerReview = customerReviewService.getById(reviewId);
+      if (customerReview == null) {
+        response.sendError(404, "Customer review with id " + reviewId + " does not exist");
+        return null;
+      }
+
+      if (customerReview.getReviewedCustomer().getId().longValue() != id.longValue()) {
+        response.sendError(404,
+            "Customer review with id " + reviewId + " does not exist for this customer");
+        return null;
+      }
+
+      //rating maximum 5
+      if (review.getRating() > Constants.MAX_REVIEW_RATING_SCORE) {
+        response.sendError(503, "Maximum rating score is " + Constants.MAX_REVIEW_RATING_SCORE);
+        return null;
+      }
+
+      review.setReviewedCustomer(id);
+
+      customerFacade.saveOrUpdateCustomerReview(review, merchantStore, language);
+
+      return review;
+
+    } catch (Exception e) {
+      LOGGER.error("Error while updating customer review", e);
+      try {
+        response.sendError(503, "Error while updating customer review" + e.getMessage());
+      } catch (Exception ignore) {
+      }
+
+      return null;
+    }
+  }
+
+  @RequestMapping(value = "/private/customers/{id}/reviews/{reviewid}", method = RequestMethod.DELETE)
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public void delete(@PathVariable final Long id, @PathVariable final Long reviewId,
+      HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+    try {
+
+      MerchantStore merchantStore = storeFacade.getByCode(request);
+      Language language = languageUtils.getRESTLanguage(request, merchantStore);
+
+      CustomerReview customerReview = customerReviewService.getById(reviewId);
+      if (customerReview == null) {
+        response.sendError(404, "Customer review with id " + reviewId + " does not exist");
+        return;
+      }
+
+      if (customerReview.getReviewedCustomer().getId().longValue() != id.longValue()) {
+        response.sendError(404,
+            "Customer review with id " + reviewId + " does not exist for this customer");
+        return;
+      }
+
+      customerFacade.deleteCustomerReview(customerReview, merchantStore, language);
+
+
+    } catch (Exception e) {
+      LOGGER.error("Error while deleting customer review", e);
+      try {
+        response.sendError(503, "Error while deleting customer review" + e.getMessage());
+      } catch (Exception ignore) {
+      }
+
+      return;
+    }
+  }
 }

@@ -17,41 +17,41 @@ import com.salesmanager.shop.store.controller.store.facade.StoreFacade;
 
 @Component
 public class MarketPlaceFacadeImpl implements MarketPlaceFacade {
-	
-	@Inject
-	private StoreFacade storeFacade;
-	
-	@Inject
-	private OptinService optinService;
-	
 
-	@Override
-	public ReadableMarketPlace get(String store, Language lang) throws Exception {
-		// TODO Auto-generated method stub
-		ReadableMerchantStore readableStore = storeFacade.getByCode(store, lang);
-		
-		if(readableStore==null) {
-			return null;
-		}
-		
-		//TODO add info from Entity
-		ReadableMarketPlace marketPlace = new ReadableMarketPlace();
-		marketPlace.setStore(readableStore);
-		
-		return marketPlace;
-		
-	}
+  @Inject
+  private StoreFacade storeFacade;
+
+  @Inject
+  private OptinService optinService;
 
 
-	@Override
-	public ReadableOptin findByMerchantAndType(MerchantStore store, OptinType type) throws Exception {
-		Optin optin = optinService.getOptinByMerchantAndType(store, type);
-		if(optin==null) {
-			return null;
-		}
-		ReadableOptinPopulator populator = new ReadableOptinPopulator();
-		ReadableOptin readable = populator.populate(optin, null, store, null);
-		return readable;
-	}
+  @Override
+  public ReadableMarketPlace get(String store, Language lang) throws Exception {
+    // TODO Auto-generated method stub
+    ReadableMerchantStore readableStore = storeFacade.getByCode(store, lang);
+
+    if (readableStore == null) {
+      return null;
+    }
+
+    //TODO add info from Entity
+    ReadableMarketPlace marketPlace = new ReadableMarketPlace();
+    marketPlace.setStore(readableStore);
+
+    return marketPlace;
+
+  }
+
+
+  @Override
+  public ReadableOptin findByMerchantAndType(MerchantStore store, OptinType type) throws Exception {
+    Optin optin = optinService.getOptinByMerchantAndType(store, type);
+    if (optin == null) {
+      return null;
+    }
+    ReadableOptinPopulator populator = new ReadableOptinPopulator();
+    ReadableOptin readable = populator.populate(optin, null, store, null);
+    return readable;
+  }
 
 }

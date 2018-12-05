@@ -30,103 +30,102 @@ import io.swagger.annotations.ApiOperation;
 
 /**
  * Optin a customer to newsletter
- * @author carlsamson
  *
+ * @author carlsamson
  */
 @Controller
 @RequestMapping("/api/v1")
 public class CustomerNewsletterApi {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerNewsletterApi.class);
-	
-	
-	@Inject
-	private CustomerFacade customerFacade;
-	
 
-	@Inject
-	private StoreFacade storeFacade;
-	
-	@Inject
-	private LanguageUtils languageUtils;
-	
-	
-	/**
-	 * Create new optin
-	 */
-	@RequestMapping( value={"/newsletter"}, method=RequestMethod.POST)
-	@ResponseStatus(HttpStatus.OK)
-	@ApiOperation(httpMethod = "POST", value = "Creates a newsletter optin", notes = "", produces = "application/json")
-	@ResponseBody
-	public ResponseEntity<Void> create(@Valid @RequestBody PersistableCustomerOptin optin, HttpServletRequest request, HttpServletResponse response) throws Exception {
+  private static final Logger LOGGER = LoggerFactory.getLogger(CustomerNewsletterApi.class);
 
-		
-		MerchantStore merchantStore = storeFacade.getByCode(request);
-		Language language = languageUtils.getRESTLanguage(request, merchantStore);
-		
-		
-		try {
 
-			customerFacade.optinCustomer(optin, merchantStore);
+  @Inject
+  private CustomerFacade customerFacade;
 
-			return new ResponseEntity<Void>(HttpStatus.OK);
-			
-		} catch (Exception e) {
-			LOGGER.error("Error while optin in customer",e);
-			try {
-				response.sendError(503, "Error while optin in customer " + e.getMessage());
-			} catch (Exception ignore) {
-			}
-			
-			return null;
-		}
 
-		
-	}
+  @Inject
+  private StoreFacade storeFacade;
 
-    @ResponseStatus(HttpStatus.OK)
-	@RequestMapping( value="/newsletter/{email}", method=RequestMethod.PUT)
-	@ApiOperation(httpMethod = "PUT", value = "Updates a customer", notes = "Requires administration access", produces = "application/json", response = PersistableCustomer.class)
-    public ResponseEntity<Void> update(@PathVariable String email, @Valid @RequestBody PersistableCustomer customer, HttpServletRequest request, HttpServletResponse response) throws Exception {
-	
-    	
-		try {
+  @Inject
+  private LanguageUtils languageUtils;
 
-			return null;
-			
-		} catch (Exception e) {
-			LOGGER.error("Error while updating optin customer",e);
-			try {
-				response.sendError(503, "Error while updating optin customer " + e.getMessage());
-			} catch (Exception ignore) {
-			}
-			
-			return null;
-		}
+
+  /**
+   * Create new optin
+   */
+  @RequestMapping(value = {"/newsletter"}, method = RequestMethod.POST)
+  @ResponseStatus(HttpStatus.OK)
+  @ApiOperation(httpMethod = "POST", value = "Creates a newsletter optin", notes = "", produces = "application/json")
+  @ResponseBody
+  public ResponseEntity<Void> create(@Valid @RequestBody PersistableCustomerOptin optin,
+      HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+    MerchantStore merchantStore = storeFacade.getByCode(request);
+    Language language = languageUtils.getRESTLanguage(request, merchantStore);
+
+    try {
+
+      customerFacade.optinCustomer(optin, merchantStore);
+
+      return new ResponseEntity<Void>(HttpStatus.OK);
+
+    } catch (Exception e) {
+      LOGGER.error("Error while optin in customer", e);
+      try {
+        response.sendError(503, "Error while optin in customer " + e.getMessage());
+      } catch (Exception ignore) {
+      }
+
+      return null;
     }
-    
-    @ResponseStatus(HttpStatus.OK)
-	@RequestMapping( value="/newsletter/{email}", method=RequestMethod.DELETE)
-    @ApiOperation(httpMethod = "DELETE", value = "Deletes a customer", notes = "Requires administration access",response = Void.class)
-    public ResponseEntity<Void> delete(@PathVariable String email, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-		try {
-			
-			return null;
-		} catch (Exception e) {
-			LOGGER.error("Error while deleting optin",e);
-			try {
-				response.sendError(503, "Error while deleting customer " + e.getMessage());
-			} catch (Exception ignore) {
-			}
-			
-			return null;
-		}
-		
-		
-	}
 
 
+  }
+
+  @ResponseStatus(HttpStatus.OK)
+  @RequestMapping(value = "/newsletter/{email}", method = RequestMethod.PUT)
+  @ApiOperation(httpMethod = "PUT", value = "Updates a customer", notes = "Requires administration access", produces = "application/json", response = PersistableCustomer.class)
+  public ResponseEntity<Void> update(@PathVariable String email,
+      @Valid @RequestBody PersistableCustomer customer, HttpServletRequest request,
+      HttpServletResponse response) throws Exception {
+
+    try {
+
+      return null;
+
+    } catch (Exception e) {
+      LOGGER.error("Error while updating optin customer", e);
+      try {
+        response.sendError(503, "Error while updating optin customer " + e.getMessage());
+      } catch (Exception ignore) {
+      }
+
+      return null;
+    }
+  }
+
+  @ResponseStatus(HttpStatus.OK)
+  @RequestMapping(value = "/newsletter/{email}", method = RequestMethod.DELETE)
+  @ApiOperation(httpMethod = "DELETE", value = "Deletes a customer", notes = "Requires administration access", response = Void.class)
+  public ResponseEntity<Void> delete(@PathVariable String email, HttpServletRequest request,
+      HttpServletResponse response) throws Exception {
+
+    try {
+
+      return null;
+    } catch (Exception e) {
+      LOGGER.error("Error while deleting optin", e);
+      try {
+        response.sendError(503, "Error while deleting customer " + e.getMessage());
+      } catch (Exception ignore) {
+      }
+
+      return null;
+    }
+
+
+  }
 
 
 }

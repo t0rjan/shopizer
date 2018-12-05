@@ -6,11 +6,11 @@ import com.salesmanager.shop.model.catalog.CatalogEntity;
 
 
 public class ProductOptionDescription extends CatalogEntity implements
-		Serializable {
+    Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+  /**
+   *
+   */
+  private static final long serialVersionUID = 1L;
 
 }

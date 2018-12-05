@@ -27,75 +27,70 @@ import com.salesmanager.shop.store.security.user.JWTUser;
 
 /**
  * Authenticates a User (Administration purpose)
- * @author c.samson
  *
+ * @author c.samson
  */
 @Controller
 @RequestMapping("/api/v1")
 public class AuthenticateUserApi {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticateUserApi.class);
 
-    @Value("${authToken.header}")
-    private String tokenHeader;
+  private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticateUserApi.class);
 
-    @Inject
-    private AuthenticationManager jwtAdminAuthenticationManager;
-    
-    @Inject
-    private UserDetailsService jwtAdminDetailsService;
+  @Value("${authToken.header}")
+  private String tokenHeader;
 
-    @Inject
-    private JWTTokenUtil jwtTokenUtil;
+  @Inject
+  private AuthenticationManager jwtAdminAuthenticationManager;
 
+  @Inject
+  private UserDetailsService jwtAdminDetailsService;
 
-    
+  @Inject
+  private JWTTokenUtil jwtTokenUtil;
 
 
-	/**
-	 * Authenticate a user using username & password
-	 * @param authenticationRequest
-	 * @param device
-	 * @return
-	 * @throws AuthenticationException
-	 */
-    @RequestMapping(value = "/private/login", method = RequestMethod.POST)
-    public ResponseEntity<?> authenticate(@RequestBody @Valid AuthenticationRequest authenticationRequest, Device device) throws AuthenticationException {
+  /**
+   * Authenticate a user using username & password
+   */
+  @RequestMapping(value = "/private/login", method = RequestMethod.POST)
+  public ResponseEntity<?> authenticate(
+      @RequestBody @Valid AuthenticationRequest authenticationRequest, Device device)
+      throws AuthenticationException {
 
-        // Perform the security
-    	Authentication authentication = null;
-    	try {
-    		
-	
-        		//to be used when username and password are set
-        		authentication = jwtAdminAuthenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(
-                                authenticationRequest.getUsername(),
-                                authenticationRequest.getPassword()
-                        )
-                );
+    // Perform the security
+    Authentication authentication = null;
+    try {
 
-    		
-    	} catch(Exception e) {
-    		LOGGER.error("Error during authentication " + e.getMessage());
-    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    	}
-    	
-    	if(authentication == null) {
-    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    	}
+      //to be used when username and password are set
+      authentication = jwtAdminAuthenticationManager.authenticate(
+          new UsernamePasswordAuthenticationToken(
+              authenticationRequest.getUsername(),
+              authenticationRequest.getPassword()
+          )
+      );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Reload password post-security so we can generate token
-        final JWTUser userDetails = (JWTUser)jwtAdminDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-        
-        final String token = jwtTokenUtil.generateToken(userDetails, device);
-
-        // Return the token
-        return ResponseEntity.ok(new AuthenticationResponse(userDetails.getId(),token));
-
+    } catch (Exception e) {
+      LOGGER.error("Error during authentication " + e.getMessage());
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    if (authentication == null) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    // Reload password post-security so we can generate token
+    final JWTUser userDetails = (JWTUser) jwtAdminDetailsService
+        .loadUserByUsername(authenticationRequest.getUsername());
+
+    final String token = jwtTokenUtil.generateToken(userDetails, device);
+
+    // Return the token
+    return ResponseEntity.ok(new AuthenticationResponse(userDetails.getId(), token));
+
+  }
 
 /*    @RequestMapping(value = "/auth/refresh", method = RequestMethod.GET)
     public ResponseEntity<?> refreshAndGetAuthenticationToken(HttpServletRequest request) {

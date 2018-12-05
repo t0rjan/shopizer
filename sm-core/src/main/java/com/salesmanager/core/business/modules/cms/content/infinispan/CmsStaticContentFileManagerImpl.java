@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.salesmanager.core.business.modules.cms.content.infinispan;
 
@@ -26,10 +26,9 @@ import com.salesmanager.core.model.content.InputContentFile;
 import com.salesmanager.core.model.content.OutputContentFile;
 
 
-
 /**
  * Manages - Images - Files (js, pdf, css...) on infinispan
- * 
+ *
  * @author Umesh Awasthi
  * @since 1.2
  *
@@ -39,7 +38,7 @@ public class CmsStaticContentFileManagerImpl
     implements ContentAssetsManager {
 
   /**
-   * 
+   *
    */
   private static final long serialVersionUID = 1L;
   private static final Logger LOGGER =
@@ -84,7 +83,7 @@ public class CmsStaticContentFileManagerImpl
    * <p>
    * Method to add static content data for given merchant.Static content data can be of following
    * type
-   * 
+   *
    * <pre>
    * 1. CSS and JS files
    * 2. Digital Data like audio or video
@@ -93,14 +92,14 @@ public class CmsStaticContentFileManagerImpl
    * <p>
    * Merchant store code will be used to create cache node where merchant data will be stored,input
    * data will contain name, file as well type of data being stored.
-   * 
+   *
    * @see FileContentType
    *      </p>
-   * 
+   *
    * @param merchantStoreCode merchant store for whom data is being stored
    * @param inputStaticContentData data object being stored
    * @throws ServiceException
-   * 
+   *
    */
   @Override
   public void addFile(final String merchantStoreCode, final InputContentFile inputStaticContentData)
@@ -138,7 +137,7 @@ public class CmsStaticContentFileManagerImpl
    * created.</li>
    * <li>Files will be stored in StaticContentCacheAttribute , which eventually will be stored in
    * Infinispan</li>
-   * 
+   *
    * @param merchantStoreCode Merchant store for which files are getting stored in Infinispan.
    * @param inputStaticContentDataList input static content file list which will get
    *        {@link InputContentImage} stored
@@ -158,7 +157,6 @@ public class CmsStaticContentFileManagerImpl
 
       for (final InputContentFile inputStaticContentData : inputStaticContentDataList) {
 
-
         String nodePath =
             this.getNodePath(merchantStoreCode, inputStaticContentData.getFileContentType());
         final Node<String, Object> merchantNode = this.getNode(nodePath);
@@ -167,8 +165,6 @@ public class CmsStaticContentFileManagerImpl
 
 
       }
-
-
 
       LOGGER.info("Total {} files added successfully.", inputStaticContentDataList.size());
 
@@ -184,7 +180,7 @@ public class CmsStaticContentFileManagerImpl
    * Method to return static data for given Merchant store based on the file name. Content data will
    * be searched in underlying Infinispan cache tree and {@link OutputStaticContentData} will be
    * returned on finding an associated file. In case of no file, null be returned.
-   * 
+   *
    * @param store Merchant store
    * @param contentFileName name of file being requested
    * @return {@link OutputStaticContentData}
@@ -202,11 +198,9 @@ public class CmsStaticContentFileManagerImpl
     InputStream input = null;
     try {
 
-
       String nodePath = this.getNodePath(merchantStoreCode, fileContentType);
 
       final Node<String, Object> merchantNode = this.getNode(nodePath);
-
 
       final byte[] fileBytes = (byte[]) merchantNode.get(contentFileName);
 
@@ -238,8 +232,6 @@ public class CmsStaticContentFileManagerImpl
   @Override
   public List<OutputContentFile> getFiles(final String merchantStoreCode,
       final FileContentType staticContentType) throws ServiceException {
-
-
 
     if (cacheManager.getTreeCache() == null) {
       throw new ServiceException(
@@ -275,12 +267,10 @@ public class CmsStaticContentFileManagerImpl
       }
 
 
-
     } catch (final Exception e) {
       LOGGER.error("Error while fetching file for {} merchant ", merchantStoreCode);
       throw new ServiceException(e);
     }
-
 
     return images;
 
@@ -288,11 +278,9 @@ public class CmsStaticContentFileManagerImpl
   }
 
 
-
   @Override
   public void removeFile(final String merchantStoreCode, final FileContentType staticContentType,
       final String fileName) throws ServiceException {
-
 
     if (cacheManager.getTreeCache() == null) {
       throw new ServiceException(
@@ -300,7 +288,6 @@ public class CmsStaticContentFileManagerImpl
     }
 
     try {
-
 
       String nodePath = this.getNodePath(merchantStoreCode, staticContentType);
       final Node<String, Object> merchantNode = this.getNode(nodePath);
@@ -331,11 +318,9 @@ public class CmsStaticContentFileManagerImpl
 
     try {
 
-
       final StringBuilder merchantPath = new StringBuilder();
       merchantPath.append(getRootName()).append(merchantStoreCode);
       cacheManager.getTreeCache().getRoot().remove(merchantPath.toString());
-
 
 
     } catch (final Exception e) {
@@ -376,7 +361,6 @@ public class CmsStaticContentFileManagerImpl
   }
 
 
-
   public CacheManager getCacheManager() {
     return cacheManager;
   }
@@ -389,7 +373,7 @@ public class CmsStaticContentFileManagerImpl
   /**
    * Queries the CMS to retrieve all static content files. Only the name of the file will be
    * returned to the client
-   * 
+   *
    * @param merchantStoreCode
    * @return
    * @throws ServiceException
@@ -398,16 +382,12 @@ public class CmsStaticContentFileManagerImpl
   public List<String> getFileNames(final String merchantStoreCode,
       final FileContentType staticContentType) throws ServiceException {
 
-
-
     if (cacheManager.getTreeCache() == null) {
       throw new ServiceException(
           "CmsStaticContentFileManagerInfinispan has a null cacheManager.getTreeCache()");
     }
 
     try {
-
-
 
       String nodePath = this.getNodePath(merchantStoreCode, staticContentType);
       final Node<String, Object> objectNode = this.getNode(nodePath);

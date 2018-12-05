@@ -17,15 +17,12 @@ public class DroolsConfiguration {
   private final static String MANUFACTURER_BASED_PRICING =
       "rules/manufacturer-shipping-ordertotal-rules.xls";
 
-
   /**
    * Drools containers defined here TODO used a builder utility instead of repetition
    */
   /**
    * This container goes along with shipping custom payment module determines pricing based on
    * different criterias
-   * 
-   * @return
    */
   @Bean
   public KieContainer kieShippingCustomContainer() {

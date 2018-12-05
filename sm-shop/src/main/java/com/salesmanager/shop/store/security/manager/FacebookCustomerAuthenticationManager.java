@@ -68,57 +68,60 @@ import com.salesmanager.shop.store.security.user.CustomerDetails;
 import com.salesmanager.shop.utils.LanguageUtils;
 
 
-
 @Component("facebookCustomerAuthenticationManager")
 public class FacebookCustomerAuthenticationManager extends CustomAuthenticationManager {
-	
-	protected final Log logger = LogFactory.getLog(getClass());
-	
-	@Value("${facebook.app.access_token}")
-	private String access_token;
 
-	private static final String providerId = "facebook";
-	
-	@Inject
-	private AuthenticationManager facebookAuthenticationManager;
-	
-	@Inject
-	private CustomerFacade customerFacade;
-	
-	@Inject
-	private StoreFacade storeFacade;
-	
-	@Inject
-	private LanguageUtils languageUtils;
-	
-	//@Inject
-	//private UserService service;
+  protected final Log logger = LogFactory.getLog(getClass());
 
-	@Inject
-	private SocialAuthenticationServiceLocator authenticationServiceLocator;
-	//private ConnectionFactoryLocator connectionFactoryLocator;
-	
-	@Inject
-	private UsersConnectionRepository socialUsersConnectionRepository;
-	private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
-	private UserIdSource userIdSource = new org.springframework.social.security.AuthenticationNameUserIdSource();
-	private SimpleUrlAuthenticationFailureHandler delegateAuthenticationFailureHandler;
-	
-	/** Entry point of facebook authentication, requires FB <token> **/
-	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-			throws AuthenticationException, Exception {
+  @Value("${facebook.app.access_token}")
+  private String access_token;
 
-		Authentication auth = null;
-		Set<String> authProviders = authenticationServiceLocator.registeredAuthenticationProviderIds();
-		if (!authProviders.isEmpty() && authProviders.contains(providerId)) {
-			SocialAuthenticationService<?> authService = authenticationServiceLocator.getAuthenticationService(providerId);
-			auth = attemptAuthService(authService, request, response);
-			if (auth == null) {
-				throw new AuthenticationServiceException("authentication failed");
-			}
-		}
-		return auth;
-	}
+  private static final String providerId = "facebook";
+
+  @Inject
+  private AuthenticationManager facebookAuthenticationManager;
+
+  @Inject
+  private CustomerFacade customerFacade;
+
+  @Inject
+  private StoreFacade storeFacade;
+
+  @Inject
+  private LanguageUtils languageUtils;
+
+  //@Inject
+  //private UserService service;
+
+  @Inject
+  private SocialAuthenticationServiceLocator authenticationServiceLocator;
+  //private ConnectionFactoryLocator connectionFactoryLocator;
+
+  @Inject
+  private UsersConnectionRepository socialUsersConnectionRepository;
+  private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
+  private UserIdSource userIdSource = new org.springframework.social.security.AuthenticationNameUserIdSource();
+  private SimpleUrlAuthenticationFailureHandler delegateAuthenticationFailureHandler;
+
+  /**
+   * Entry point of facebook authentication, requires FB <token>
+   **/
+  public Authentication attemptAuthentication(HttpServletRequest request,
+      HttpServletResponse response)
+      throws AuthenticationException, Exception {
+
+    Authentication auth = null;
+    Set<String> authProviders = authenticationServiceLocator.registeredAuthenticationProviderIds();
+    if (!authProviders.isEmpty() && authProviders.contains(providerId)) {
+      SocialAuthenticationService<?> authService = authenticationServiceLocator
+          .getAuthenticationService(providerId);
+      auth = attemptAuthService(authService, request, response);
+      if (auth == null) {
+        throw new AuthenticationServiceException("authentication failed");
+      }
+    }
+    return auth;
+  }
 
 
 /*	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
@@ -127,205 +130,216 @@ public class FacebookCustomerAuthenticationManager extends CustomAuthenticationM
 		chain.doFilter(request, response);
 	}*/
 
-	@Deprecated
-	protected boolean requiresAuthentication(HttpServletRequest request, HttpServletResponse response) {
-		return true;
-	}
+  @Deprecated
+  protected boolean requiresAuthentication(HttpServletRequest request,
+      HttpServletResponse response) {
+    return true;
+  }
 
-	protected Connection<?> addConnection(SocialAuthenticationService<?> authService, String userId,
-			ConnectionData data) {
-		HashSet<String> userIdSet = new HashSet<String>();
-		userIdSet.add(data.getProviderUserId());
-		Set<String> connectedUserIds = socialUsersConnectionRepository.findUserIdsConnectedTo(data.getProviderId(),
-				userIdSet);
-		if (connectedUserIds.contains(userId)) {
-			// already connected
-			return null;
-		} else if (!authService.getConnectionCardinality().isMultiUserId() && !connectedUserIds.isEmpty()) {
-			return null;
-		}
+  protected Connection<?> addConnection(SocialAuthenticationService<?> authService, String userId,
+      ConnectionData data) {
+    HashSet<String> userIdSet = new HashSet<String>();
+    userIdSet.add(data.getProviderUserId());
+    Set<String> connectedUserIds = socialUsersConnectionRepository
+        .findUserIdsConnectedTo(data.getProviderId(),
+            userIdSet);
+    if (connectedUserIds.contains(userId)) {
+      // already connected
+      return null;
+    } else if (!authService.getConnectionCardinality().isMultiUserId() && !connectedUserIds
+        .isEmpty()) {
+      return null;
+    }
 
-		ConnectionRepository repo = socialUsersConnectionRepository.createConnectionRepository(userId);
+    ConnectionRepository repo = socialUsersConnectionRepository.createConnectionRepository(userId);
 
-		if (!authService.getConnectionCardinality().isMultiProviderUserId()) {
-			List<Connection<?>> connections = repo.findConnections(data.getProviderId());
-			if (!connections.isEmpty()) {
-				// TODO maybe throw an exception to allow UI feedback?
-				return null;
-			}
-		}
+    if (!authService.getConnectionCardinality().isMultiProviderUserId()) {
+      List<Connection<?>> connections = repo.findConnections(data.getProviderId());
+      if (!connections.isEmpty()) {
+        // TODO maybe throw an exception to allow UI feedback?
+        return null;
+      }
+    }
 
-		// add new connection
-		Connection<?> connection = authService.getConnectionFactory().createConnection(data);
-		connection.sync();
-		repo.addConnection(connection);
-		return connection;
-	}
+    // add new connection
+    Connection<?> connection = authService.getConnectionFactory().createConnection(data);
+    connection.sync();
+    repo.addConnection(connection);
+    return connection;
+  }
 
-	private Authentication attemptAuthService(final SocialAuthenticationService<?> authService,
-			final HttpServletRequest request, HttpServletResponse response)
-					throws SocialAuthenticationRedirectException, AuthenticationException, Exception {
-		
-		final String requestHeader = request.getHeader(super.getTokenHeader());//token
-		
-		if (requestHeader == null) {
-			throw new SocialAuthenticationException("No token in the request");
-		}
-		
-		if (!requestHeader.startsWith("FB ")) {//FB token
-			throw new SocialAuthenticationException("Token must start with FB");
-		}
-		
-		String input_token = requestHeader.substring(3);
-		
-		URIBuilder builder = URIBuilder.fromUri(String.format("%s/debug_token", "https://graph.facebook.com"));
-		builder.queryParam("access_token", access_token);
-		builder.queryParam("input_token", input_token);
-		URI uri = builder.build();
-		RestTemplate restTemplate = new RestTemplate();
+  private Authentication attemptAuthService(final SocialAuthenticationService<?> authService,
+      final HttpServletRequest request, HttpServletResponse response)
+      throws SocialAuthenticationRedirectException, AuthenticationException, Exception {
 
-		JsonNode resp = null;
-		try {
-			resp = restTemplate.getForObject(uri, JsonNode.class);
-		} catch (HttpClientErrorException e) {
-			throw new SocialAuthenticationException("Error validating token");
-		}
-		Boolean isValid = resp.path("data").findValue("is_valid").asBoolean();
-		if (!isValid)
-			throw new SocialAuthenticationException("Token is not valid");
+    final String requestHeader = request.getHeader(super.getTokenHeader());//token
 
-		AccessGrant accessGrant = new AccessGrant(input_token, null, null,
-				resp.path("data").findValue("expires_at").longValue());
+    if (requestHeader == null) {
+      throw new SocialAuthenticationException("No token in the request");
+    }
 
-		Connection<?> connection = ((OAuth2ConnectionFactory<?>) authService.getConnectionFactory())
-				.createConnection(accessGrant);
-		SocialAuthenticationToken token = new SocialAuthenticationToken(connection, null);
-		Assert.notNull(token.getConnection());
+    if (!requestHeader.startsWith("FB ")) {//FB token
+      throw new SocialAuthenticationException("Token must start with FB");
+    }
 
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth == null || !auth.isAuthenticated()) {
-			return doAuthentication(authService, request, token);
-		} else {
-			addConnection(authService, request, token);
-			return null;
-		}
+    String input_token = requestHeader.substring(3);
 
-	}
+    URIBuilder builder = URIBuilder
+        .fromUri(String.format("%s/debug_token", "https://graph.facebook.com"));
+    builder.queryParam("access_token", access_token);
+    builder.queryParam("input_token", input_token);
+    URI uri = builder.build();
+    RestTemplate restTemplate = new RestTemplate();
 
-	private void addConnection(final SocialAuthenticationService<?> authService, HttpServletRequest request,
-			SocialAuthenticationToken token) {
-		// already authenticated - add connection instead
-		String userId = userIdSource.getUserId();
-		Object principal = token.getPrincipal();
-		if (userId == null || !(principal instanceof ConnectionData))
-			return;
+    JsonNode resp = null;
+    try {
+      resp = restTemplate.getForObject(uri, JsonNode.class);
+    } catch (HttpClientErrorException e) {
+      throw new SocialAuthenticationException("Error validating token");
+    }
+    Boolean isValid = resp.path("data").findValue("is_valid").asBoolean();
+    if (!isValid) {
+      throw new SocialAuthenticationException("Token is not valid");
+    }
 
-		addConnection(authService, userId, (ConnectionData) principal);
+    AccessGrant accessGrant = new AccessGrant(input_token, null, null,
+        resp.path("data").findValue("expires_at").longValue());
 
-	}
+    Connection<?> connection = ((OAuth2ConnectionFactory<?>) authService.getConnectionFactory())
+        .createConnection(accessGrant);
+    SocialAuthenticationToken token = new SocialAuthenticationToken(connection, null);
+    Assert.notNull(token.getConnection());
 
-	private Authentication doAuthentication(SocialAuthenticationService<?> authService, HttpServletRequest request,
-			SocialAuthenticationToken token) throws Exception {
-		try {
-			if (!authService.getConnectionCardinality().isAuthenticatePossible())
-				return null;
-			token.setDetails(authenticationDetailsSource.buildDetails(request));
-			Authentication success = facebookAuthenticationManager.authenticate(token);
-			Assert.isInstanceOf(SocialUserDetails.class, success.getPrincipal(), "unexpected principle type");
-			updateConnections(authService, token, success);
-			return success;
-			
-		} catch (BadCredentialsException e) {
-			
-			CustomerDetails registered = null;
-			PersistableCustomer registration = null;
-			try {
-				
-				MerchantStore merchantStore = storeFacade.getByCode(request);
-				Language language = languageUtils.getRESTLanguage(request, merchantStore);	
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null || !auth.isAuthenticated()) {
+      return doAuthentication(authService, request, token);
+    } else {
+      addConnection(authService, request, token);
+      return null;
+    }
 
-				registration = register(token.getConnection());
-				
-				
-				PersistableCustomer c = customerFacade.registerCustomer(registration, merchantStore, language);
-				
-				Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-				GrantedAuthority role = new SimpleGrantedAuthority("ROLE_" + Constants.PERMISSION_CUSTOMER_AUTHENTICATED);//required to login
-				authorities.add(role);
-				
-				registered = new CustomerDetails(
-						c.getEmailAddress(),
-						c.getEncodedPassword(),
-						authorities);
-				
-			} catch (UserAlreadyExistException e1) {
-				//we create the user anyway
-				//throw new SocialAuthenticationException("An email address was found from the database.");
-			}
-			ConnectionRepository repo = socialUsersConnectionRepository.createConnectionRepository(registration.getEmailAddress());
-			repo.addConnection(token.getConnection());
-			Authentication success = facebookAuthenticationManager.authenticate(token);
-			return success;
+  }
 
-		}
-		
-	}
+  private void addConnection(final SocialAuthenticationService<?> authService,
+      HttpServletRequest request,
+      SocialAuthenticationToken token) {
+    // already authenticated - add connection instead
+    String userId = userIdSource.getUserId();
+    Object principal = token.getPrincipal();
+    if (userId == null || !(principal instanceof ConnectionData)) {
+      return;
+    }
 
-	private void updateConnections(SocialAuthenticationService<?> authService, SocialAuthenticationToken token,
-			Authentication success) {
+    addConnection(authService, userId, (ConnectionData) principal);
 
-		String userId = ((SocialUserDetails) success.getPrincipal()).getUserId();
-		Connection<?> connection = token.getConnection();
-		ConnectionRepository repo = socialUsersConnectionRepository.createConnectionRepository(userId);
-		repo.updateConnection(connection);
+  }
 
-	}
+  private Authentication doAuthentication(SocialAuthenticationService<?> authService,
+      HttpServletRequest request,
+      SocialAuthenticationToken token) throws Exception {
+    try {
+      if (!authService.getConnectionCardinality().isAuthenticatePossible()) {
+        return null;
+      }
+      token.setDetails(authenticationDetailsSource.buildDetails(request));
+      Authentication success = facebookAuthenticationManager.authenticate(token);
+      Assert.isInstanceOf(SocialUserDetails.class, success.getPrincipal(),
+          "unexpected principle type");
+      updateConnections(authService, token, success);
+      return success;
 
+    } catch (BadCredentialsException e) {
 
-	@Override
-	public void successfullAuthentication(HttpServletRequest request, HttpServletResponse response,
-			Authentication authentication) throws AuthenticationException {
-		logger.debug("Successfull FB authentication");
-		
-	}
+      CustomerDetails registered = null;
+      PersistableCustomer registration = null;
+      try {
 
+        MerchantStore merchantStore = storeFacade.getByCode(request);
+        Language language = languageUtils.getRESTLanguage(request, merchantStore);
 
-	@Override
-	public void unSuccessfullAuthentication(HttpServletRequest request, HttpServletResponse response)
-			throws AuthenticationException {
-		logger.debug("Un successfull FB authentication");
-		
-	}
+        registration = register(token.getConnection());
+
+        PersistableCustomer c = customerFacade
+            .registerCustomer(registration, merchantStore, language);
+
+        Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+        GrantedAuthority role = new SimpleGrantedAuthority(
+            "ROLE_" + Constants.PERMISSION_CUSTOMER_AUTHENTICATED);//required to login
+        authorities.add(role);
+
+        registered = new CustomerDetails(
+            c.getEmailAddress(),
+            c.getEncodedPassword(),
+            authorities);
+
+      } catch (UserAlreadyExistException e1) {
+        //we create the user anyway
+        //throw new SocialAuthenticationException("An email address was found from the database.");
+      }
+      ConnectionRepository repo = socialUsersConnectionRepository
+          .createConnectionRepository(registration.getEmailAddress());
+      repo.addConnection(token.getConnection());
+      Authentication success = facebookAuthenticationManager.authenticate(token);
+      return success;
+
+    }
+
+  }
+
+  private void updateConnections(SocialAuthenticationService<?> authService,
+      SocialAuthenticationToken token,
+      Authentication success) {
+
+    String userId = ((SocialUserDetails) success.getPrincipal()).getUserId();
+    Connection<?> connection = token.getConnection();
+    ConnectionRepository repo = socialUsersConnectionRepository.createConnectionRepository(userId);
+    repo.updateConnection(connection);
+
+  }
 
 
+  @Override
+  public void successfullAuthentication(HttpServletRequest request, HttpServletResponse response,
+      Authentication authentication) throws AuthenticationException {
+    logger.debug("Successfull FB authentication");
 
-	private PersistableCustomer register(Connection<?> connection) {
-		PersistableCustomer customer = new PersistableCustomer();
-		if (connection != null) {
-			UserProfile socialMediaProfile = connection.fetchUserProfile();
-			
-			ConnectionKey providerKey = connection.getKey();
-			
-			customer.setEmailAddress(socialMediaProfile.getEmail());
-			customer.setUserName(socialMediaProfile.getEmail());
-			customer.setFirstName(socialMediaProfile.getFirstName());
-			customer.setLastName(socialMediaProfile.getLastName());
-			customer.setProvider(providerKey.getProviderId());
-			
-			//create dummy password
-			
-			Address address = new Address();
-			address.setFirstName(socialMediaProfile.getFirstName());
-			address.setLastName(socialMediaProfile.getLastName());
-			address.setCountry(com.salesmanager.core.business.constants.Constants.DEFAULT_COUNTRY);
-			
-			customer.setBilling(address);
+  }
 
-		}
 
-		return customer;
-	}
-	
-	
+  @Override
+  public void unSuccessfullAuthentication(HttpServletRequest request, HttpServletResponse response)
+      throws AuthenticationException {
+    logger.debug("Un successfull FB authentication");
+
+  }
+
+
+  private PersistableCustomer register(Connection<?> connection) {
+    PersistableCustomer customer = new PersistableCustomer();
+    if (connection != null) {
+      UserProfile socialMediaProfile = connection.fetchUserProfile();
+
+      ConnectionKey providerKey = connection.getKey();
+
+      customer.setEmailAddress(socialMediaProfile.getEmail());
+      customer.setUserName(socialMediaProfile.getEmail());
+      customer.setFirstName(socialMediaProfile.getFirstName());
+      customer.setLastName(socialMediaProfile.getLastName());
+      customer.setProvider(providerKey.getProviderId());
+
+      //create dummy password
+
+      Address address = new Address();
+      address.setFirstName(socialMediaProfile.getFirstName());
+      address.setLastName(socialMediaProfile.getLastName());
+      address.setCountry(com.salesmanager.core.business.constants.Constants.DEFAULT_COUNTRY);
+
+      customer.setBilling(address);
+
+    }
+
+    return customer;
+  }
+
 
 }

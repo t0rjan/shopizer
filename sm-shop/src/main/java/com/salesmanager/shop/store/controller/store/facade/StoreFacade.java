@@ -8,21 +8,18 @@ import com.salesmanager.shop.model.shop.ReadableMerchantStore;
 
 /**
  * Layer between shop controllers, services and API with sm-core
- * @author carlsamson
  *
+ * @author carlsamson
  */
 public interface StoreFacade {
-	
-	/**
-	 * Find MerchantStore model from store code
-	 * @param code
-	 * @return
-	 * @throws Exception
-	 */
-	MerchantStore getByCode(HttpServletRequest reques) throws Exception;
-	
-	MerchantStore get(String code) throws Exception;
-	
-	ReadableMerchantStore getByCode(String code, Language lang) throws Exception;
+
+  /**
+   * Find MerchantStore model from store code
+   */
+  MerchantStore getByCode(HttpServletRequest reques) throws Exception;
+
+  MerchantStore get(String code) throws Exception;
+
+  ReadableMerchantStore getByCode(String code, Language lang) throws Exception;
 
 }

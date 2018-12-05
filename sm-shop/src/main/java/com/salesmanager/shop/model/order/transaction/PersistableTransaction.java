@@ -8,35 +8,35 @@ import com.salesmanager.shop.utils.Enum;
 
 /**
  * This class is used for writing a transaction in the System
- * @author c.samson
  *
+ * @author c.samson
  */
 public class PersistableTransaction extends TransactionEntity implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	@Enum(enumClass=PaymentType.class, ignoreCase=true) 
-	private String paymentType;
+  /**
+   *
+   */
+  private static final long serialVersionUID = 1L;
 
-	@Enum(enumClass=TransactionType.class, ignoreCase=true) 
-	private String transactionType;
+  @Enum(enumClass = PaymentType.class, ignoreCase = true)
+  private String paymentType;
 
-	public String getPaymentType() {
-		return paymentType;
-	}
+  @Enum(enumClass = TransactionType.class, ignoreCase = true)
+  private String transactionType;
 
-	public void setPaymentType(String paymentType) {
-		this.paymentType = paymentType;
-	}
+  public String getPaymentType() {
+    return paymentType;
+  }
 
-	public String getTransactionType() {
-		return transactionType;
-	}
+  public void setPaymentType(String paymentType) {
+    this.paymentType = paymentType;
+  }
 
-	public void setTransactionType(String transactionType) {
-		this.transactionType = transactionType;
-	}
+  public String getTransactionType() {
+    return transactionType;
+  }
+
+  public void setTransactionType(String transactionType) {
+    this.transactionType = transactionType;
+  }
 }

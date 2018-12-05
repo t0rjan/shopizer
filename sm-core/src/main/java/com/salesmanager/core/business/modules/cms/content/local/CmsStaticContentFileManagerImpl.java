@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.salesmanager.core.business.modules.cms.content.local;
 
@@ -26,10 +26,9 @@ import com.salesmanager.core.model.content.InputContentFile;
 import com.salesmanager.core.model.content.OutputContentFile;
 
 
-
 /**
  * Manages - Images - Files (js, pdf, css...) on a local web server
- * 
+ *
  * @author Carl Samson
  * @since 1.0.3
  *
@@ -37,7 +36,7 @@ import com.salesmanager.core.model.content.OutputContentFile;
 public class CmsStaticContentFileManagerImpl implements ContentAssetsManager {
 
   /**
-   * 
+   *
    */
   private static final long serialVersionUID = 1L;
   private static final Logger LOGGER =
@@ -75,7 +74,7 @@ public class CmsStaticContentFileManagerImpl implements ContentAssetsManager {
    * <p>
    * Method to add static content data for given merchant.Static content data can be of following
    * type
-   * 
+   *
    * <pre>
    * 1. CSS and JS files
    * 2. Digital Data like audio or video
@@ -84,14 +83,14 @@ public class CmsStaticContentFileManagerImpl implements ContentAssetsManager {
    * <p>
    * Merchant store code will be used to create cache node where merchant data will be stored,input
    * data will contain name, file as well type of data being stored.
-   * 
+   *
    * @see FileContentType
    *      </p>
-   * 
+   *
    * @param merchantStoreCode merchant store for whom data is being stored
    * @param inputStaticContentData data object being stored
    * @throws ServiceException
-   * 
+   *
    */
   @Override
   public void addFile(final String merchantStoreCode, final InputContentFile inputStaticContentData)
@@ -102,8 +101,6 @@ public class CmsStaticContentFileManagerImpl implements ContentAssetsManager {
      * "CmsStaticContentFileManagerInfinispanImpl has a null cacheManager.getTreeCache()" ); }
      */
     try {
-
-
 
       // base path
       String rootPath = this.buildRootPath();
@@ -125,20 +122,14 @@ public class CmsStaticContentFileManagerImpl implements ContentAssetsManager {
       // file creation
       nodePath.append(inputStaticContentData.getFileName());
 
-
       Path path = Paths.get(nodePath.toString());
-
 
       // file creation
       // nodePath.append(Constants.SLASH).append(contentImage.getFileName());
 
-
       // Path path = Paths.get(nodePath.toString());
 
-
       Files.copy(inputStaticContentData.getFile(), path, StandardCopyOption.REPLACE_EXISTING);
-
-
 
       // String nodePath = this.getNodePath(merchantStoreCode,
       // inputStaticContentData.getFileContentType());
@@ -166,7 +157,7 @@ public class CmsStaticContentFileManagerImpl implements ContentAssetsManager {
    * created.</li>
    * <li>Files will be stored in StaticContentCacheAttribute , which eventually will be stored in
    * Infinispan</li>
-   * 
+   *
    * @param merchantStoreCode Merchant store for which files are getting stored in Infinispan.
    * @param inputStaticContentDataList input static content file list which will get
    *        {@link InputContentImage} stored
@@ -184,7 +175,6 @@ public class CmsStaticContentFileManagerImpl implements ContentAssetsManager {
      */
     try {
 
-
       // base path
       String rootPath = this.buildRootPath();
       Path confDir = Paths.get(rootPath);
@@ -196,10 +186,7 @@ public class CmsStaticContentFileManagerImpl implements ContentAssetsManager {
       Path merchantPath = Paths.get(nodePath.toString());
       this.createDirectoryIfNorExist(merchantPath);
 
-
-
       for (final InputContentFile inputStaticContentData : inputStaticContentDataList) {
-
 
         // file path
         nodePath.append(Constants.SLASH).append(inputStaticContentData.getFileContentType())
@@ -210,11 +197,9 @@ public class CmsStaticContentFileManagerImpl implements ContentAssetsManager {
         // file creation
         nodePath.append(Constants.SLASH).append(inputStaticContentData.getFileName());
 
-
         Path path = Paths.get(nodePath.toString());
 
         Files.copy(inputStaticContentData.getFile(), path, StandardCopyOption.REPLACE_EXISTING);
-
 
         // String nodePath = this.getNodePath(merchantStoreCode,
         // inputStaticContentData.getFileContentType());
@@ -223,10 +208,7 @@ public class CmsStaticContentFileManagerImpl implements ContentAssetsManager {
         // merchantNode.put(inputStaticContentData.getFileName(), IOUtils.toByteArray(
         // inputStaticContentData.getFile() ));
 
-
       }
-
-
 
       LOGGER.info("Total {} files added successfully.", inputStaticContentDataList.size());
 
@@ -242,7 +224,7 @@ public class CmsStaticContentFileManagerImpl implements ContentAssetsManager {
    * Method to return static data for given Merchant store based on the file name. Content data will
    * be searched in underlying Infinispan cache tree and {@link OutputStaticContentData} will be
    * returned on finding an associated file. In case of no file, null be returned.
-   * 
+   *
    * @param store Merchant store
    * @param contentFileName name of file being requested
    * @return {@link OutputStaticContentData}
@@ -261,12 +243,10 @@ public class CmsStaticContentFileManagerImpl implements ContentAssetsManager {
   public List<OutputContentFile> getFiles(final String merchantStoreCode,
       final FileContentType staticContentType) throws ServiceException {
 
-
     throw new ServiceException("Not implemented for httpd image manager");
 
 
   }
-
 
 
   @Override
@@ -274,7 +254,6 @@ public class CmsStaticContentFileManagerImpl implements ContentAssetsManager {
       final String fileName) throws ServiceException {
 
     try {
-
 
       StringBuilder merchantPath = new StringBuilder();
       merchantPath.append(buildRootPath()).append(Constants.SLASH).append(merchantStoreCode)
@@ -284,7 +263,6 @@ public class CmsStaticContentFileManagerImpl implements ContentAssetsManager {
       Path path = Paths.get(merchantPath.toString());
 
       Files.deleteIfExists(path);
-
 
 
     } catch (final Exception e) {
@@ -306,14 +284,12 @@ public class CmsStaticContentFileManagerImpl implements ContentAssetsManager {
 
     try {
 
-
       StringBuilder merchantPath = new StringBuilder();
       merchantPath.append(buildRootPath()).append(Constants.SLASH).append(merchantStoreCode);
 
       Path path = Paths.get(merchantPath.toString());
 
       Files.deleteIfExists(path);
-
 
 
     } catch (final Exception e) {
@@ -324,11 +300,10 @@ public class CmsStaticContentFileManagerImpl implements ContentAssetsManager {
   }
 
 
-
   /**
    * Queries the CMS to retrieve all static content files. Only the name of the file will be
    * returned to the client
-   * 
+   *
    * @param merchantStoreCode
    * @return
    * @throws ServiceException
@@ -336,8 +311,6 @@ public class CmsStaticContentFileManagerImpl implements ContentAssetsManager {
   @Override
   public List<String> getFileNames(final String merchantStoreCode,
       final FileContentType staticContentType) throws ServiceException {
-
-
 
     try {
 
@@ -416,7 +389,6 @@ public class CmsStaticContentFileManagerImpl implements ContentAssetsManager {
   public void setCacheManager(LocalCacheManagerImpl cacheManager) {
     this.cacheManager = cacheManager;
   }
-
 
 
 }

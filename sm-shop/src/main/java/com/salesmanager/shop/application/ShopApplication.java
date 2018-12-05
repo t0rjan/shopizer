@@ -7,11 +7,10 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 @SpringBootApplication
 public class ShopApplication extends SpringBootServletInitializer {
-	
-    public static void main(String[] args) {
-        SpringApplication.run(ShopApplication.class, args);
-    }
-    
-    
+
+  public static void main(String[] args) {
+    SpringApplication.run(ShopApplication.class, args);
+  }
+
 
 }
