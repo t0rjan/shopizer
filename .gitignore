@@ -25,4 +25,4 @@ sm-shop/src/main/resources/database.properties
 */src/main/resources/rebel-remote.xml
 
 #缓存数据库的文件
-/files/store/StoreRepository.dat
+sm-shop/files/store/StoreRepository.dat
