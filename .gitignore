@@ -7,7 +7,6 @@
 *.idea/
 *.iml
 */target/*
-.idea/workspace.xml
 *.class
 /bin/
 /WebContent/
@@ -21,3 +20,9 @@
 **/.classpath
 */sm-shop/src/main/resources/*
 sm-shop/src/main/resources/database.properties
+
+*/src/main/resources/rebel.xml
+*/src/main/resources/rebel-remote.xml
+
+#缓存数据库的文件
+/files/store/StoreRepository.dat
