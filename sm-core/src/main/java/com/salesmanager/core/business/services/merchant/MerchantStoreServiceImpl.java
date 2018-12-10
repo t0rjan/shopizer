@@ -2,6 +2,7 @@ package com.salesmanager.core.business.services.merchant;
 
 import javax.inject.Inject;
 
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.exception.ServiceException;
@@ -19,7 +20,6 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 
   @Inject
   protected ProductTypeService productTypeService;
-
 
   private MerchantRepository merchantRepository;
 
@@ -47,13 +47,14 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 
     return merchantRepository.findByCode(code);
   }
-	
-/*	@Override
+
+//  region 他们自己写的，我为了方便，通过region注释掉了
+/* @Override
 	public void delete(MerchantStore merchant) throws ServiceException {
 		
 		merchant = this.getById(merchant.getId());
 		
-		
+
 		//reference
 		List<Manufacturer> manufacturers = manufacturerService.listByStore(merchant);
 		for(Manufacturer manufacturer : manufacturers) {
@@ -101,7 +102,14 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 		}
 		
 		super.delete(merchant);
-		
+
 	}*/
+//endregion
+
+
+  public MerchantStore getById(Integer merchantId) {
+    return merchantRepository.getById(merchantId);
+  }
+
 
 }
